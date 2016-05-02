@@ -52,6 +52,14 @@ public interface ILista {
     public Object remover(int index);
     
     /**
+     * Remove o objeto da lista.
+     * @param remove - Objeto a ser removido da lista.
+     * @return obj - Objeto removido.
+     */
+    
+    public Object removerObjeto(Object o);
+    
+    /**
      * Recupera um objeto na lista na posição indicada.
      * @param index - Posição a ser recuperada.
      * @return objeto - Objeto recuperado.

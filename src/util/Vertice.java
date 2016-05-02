@@ -1,4 +1,5 @@
 package util;
+
 /**
  * Classe Vértice do Grafo.
  * @author Gustavo Henrique.
@@ -10,7 +11,7 @@ package util;
 public class Vertice {
 
 	private int grau;
-	private Lista listaArestas;
+	//private ArrayList<Aresta> listaArestas;
 	private Object objeto;
 
 	/*___________________________________________________________________________________________*/
@@ -21,7 +22,7 @@ public class Vertice {
 	public Vertice(Object objeto){
 		this.setObjeto(objeto);
 		grau = 0;
-		setListaArestas(new Lista());
+		//listaArestas = new ArrayList<Aresta>();
 	}
 
 	/*___________________________________________________________________________________________*/
@@ -45,17 +46,17 @@ public class Vertice {
 	 * Retorna a lista de arestas do vértice.
 	 * @return listaArestas - Lista de arestas do vértice.
 	 */
-	public Lista getListaArestas() {
+	/*public ArrayList<Aresta> getListaArestas() {
 		return listaArestas;
-	}
+	}*/
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Altera a lista de arestas do vértice.
 	 * @param listaArestas - Nova lista de arestas do vértice.
 	 */
-	public void setListaArestas(Lista listaArestas) {
+	/*public void setListaArestas(ArrayList<Aresta> listaArestas) {
 		this.listaArestas = listaArestas;
-	}
+	}*/
 	/*___________________________________________________________________________________________*/
 
 	/**

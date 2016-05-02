@@ -177,4 +177,17 @@ public class Lista implements ILista {
 		Iterador iterador = new Iterador(primeiro);// Cria um iterador passando o inicio da lista.
 		return iterador;// Retorna o iterador criado.
 	}
+
+	@Override
+	public Object removerObjeto(Object o) {// Remove o objeto recebido
+		No aux = primeiro;
+		while(aux != null){
+			if(aux.getObjeto().equals(o)){
+				aux.getAfter().setNext(aux.getNext());// Deletando o nó da lista.
+				return aux.getObjeto();
+			}
+			aux = aux.getNext();
+		}
+		return null;
+	}
 }

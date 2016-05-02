@@ -1,4 +1,7 @@
 package util;
+
+import java.util.Iterator;
+
 /**
  * Interface com os métodos básicos de qualquer grafo.
  * @author Gustavo Henrique.
@@ -25,13 +28,13 @@ public interface IGrafo {
 	 * Retorna um iterador para os vértices em G.
 	 * @return iteradorVertices - Iterador de vértices do grafo.
 	 */
-	public IIterador iteradorVertices();
+	public Iterator<Vertice> iteradorVertices();
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Retorna um iterador para as arestas em G.
 	 * @return iteradorArestas - Iterador de arestas do grafo.
 	 */
-	public IIterador iteradorArestas();
+	public Iterator<Aresta> iteradorArestas();
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Retorna o vértice inicial em G.
@@ -57,14 +60,14 @@ public interface IGrafo {
 	 * @param v - Vértice que contém os vértices adjacentes.
 	 * @return iteradorVerticesAdjacentes - Iterador para os vértices adjacentes a v.
 	 */
-	public IIterador verticesAdjacentes(Vertice v);
+	public Iterator<Vertice> verticesAdjacentes(Vertice v);
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Retorna um iterador para as arestas incidentes a v.
 	 * @param v - Vértice que contém as arestas incidentes.
 	 * @return iteradorArestasIncidentes - Iterador das aresta incidentes em v.
 	 */
-	public IIterador arestasIncidentes(Vertice v);
+	public Iterator<Aresta> arestasIncidentes(Vertice v);
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Verifica se os vértices v e w são adjacentes.
@@ -90,5 +93,32 @@ public interface IGrafo {
 	 * @return v - Vértice criado.
 	 */
 	public Vertice inserir(Vertice w, Object o);
+	/*___________________________________________________________________________________________*/
+	/**
+	 * Insere um novo vértice em G.
+	 * @param o - Objeto do novo vértice.
+	 * @return v - Vértice criado.
+	 */
+	public Vertice inserir(Object o);
+	/*___________________________________________________________________________________________*/
+	/**
+	 * Insere uma aresta entre vértices em G.
+	 * @param v - Vértice a ser adicionado a aresta.
+	 * @param w - Vértice a ser adicionado a aresta. 
+	 * @param peso - Peso da aresta.
+	 */
+	public void inserirAresta(Vertice v, Vertice w, int peso);
+	/*___________________________________________________________________________________________*/
+	/**
+	 * Remove uma aresta em G.
+	 * @param a - Aresta a ser removida.
+	 */
+	public void removerAresta(Aresta a);
+	/*___________________________________________________________________________________________*/
+	/**
+	 * Remove um vértice em G.
+	 * @param o - Objeto a ser removido.
+	 */
+	public void removerVertice(Object o);
 	/*___________________________________________________________________________________________*/
 }
