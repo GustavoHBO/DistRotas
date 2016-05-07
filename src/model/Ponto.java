@@ -2,7 +2,7 @@ package model;
 
 public class Ponto {
 	
-	private String nome;
+	private String nome = "Ponto";// Nome padrão do ponto.
 	private int x = 0;
 	private int y = 0;
 	

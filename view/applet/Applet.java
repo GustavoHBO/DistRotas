@@ -1,7 +1,6 @@
 package applet;
 
 import java.awt.Button;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Panel;
 import java.awt.TextField;
@@ -23,10 +22,11 @@ public class Applet extends JApplet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final int RAIO = 10, X = 500, Y = 400;// RAIO é o raio do ponto, X e Y é o tamanho do panel.
-	private ArrayList<Ponto> listaDePontos= new ArrayList<Ponto>();
-	private Panel panelPrincipal = null;
-	private Panel panelCadastraPonto = null;
+	private static final int RAIO = 10, X = 500, Y = 400;// RAIO é o raio do ponto, X e Y é o tamanho do panel.
+	private static ArrayList<Ponto> listaDePontos= new ArrayList<Ponto>();
+	private static Panel panelPrincipal = null;
+	private static Panel panelCadastraPonto = null;
+	private static TextField textFieldNome = null;
 
 	public void init(){
 
@@ -47,6 +47,7 @@ public class Applet extends JApplet {
 		panelCadastraPonto = new Panel(null);
 		panelCadastraPonto.setSize(X, Y);
 		panelCadastraPonto.setVisible(true);
+		preparaTextFildNome();
 		add(panelCadastraPonto);
 	}
 	private void preparaBotaoCadastrarPonto(){
@@ -59,6 +60,7 @@ public class Applet extends JApplet {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				desenhaPontos(panelCadastraPonto, listaDePontos);
 				cadastraPonto();
 			}
 		});
@@ -73,28 +75,35 @@ public class Applet extends JApplet {
 		botaoEscolherRota.setLocation(X/2 - x/2, 100);
 		panelPrincipal.add(botaoEscolherRota);
 	}
+	
+	private static void preparaTextFildNome(){
+		textFieldNome = new TextField("Digite o nome aqui!");
+		textFieldNome.setLocation(X/4, 30);
+		textFieldNome.setEditable(true);
+		textFieldNome.setSize(150, 20);
+		textFieldNome.setVisible(true);
+		panelCadastraPonto.add(textFieldNome);
+	}
 
 	private void cadastraPonto(){
 
 		Ponto ponto = new Ponto();
+		panelCadastraPonto.setVisible(true);
 		panelPrincipal.setVisible(false);
-
+		
 		Button botaoVoltar = new Button("Voltar ao Inicio");
 		botaoVoltar.setBounds(X - 120, Y - 100, 100, 50);
-
 		botaoVoltar.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				panelPrincipal.setVisible(true);
+				panelCadastraPonto.setVisible(false);
 				return;
 			}
 		});
 		panelCadastraPonto.add(botaoVoltar);
-
-		nomePonto(panelCadastraPonto, "Digite o nome aqui", ponto);
-		//TODO desenhaPontos(panelCadastraPonto, listaDePontos);
-
+		
 		panelCadastraPonto.addMouseListener(new MouseListener(){
 
 			@Override
@@ -114,9 +123,10 @@ public class Applet extends JApplet {
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+				desenhaPontos(panelCadastraPonto, listaDePontos);
+				ponto.setNome(textFieldNome.getText());
 				ponto.setX(arg0.getX());
 				ponto.setY(arg0.getY());
-				desenhaPonto(panelCadastraPonto, ponto);
 				listaDePontos.add(ponto);
 			}
 
@@ -127,8 +137,11 @@ public class Applet extends JApplet {
 		});
 	}
 
-	private void desenhaPonto(Panel panel, Ponto ponto){
-		Graphics draw = panel.getGraphics();
+	private static void desenhaPonto(Panel panel, Ponto ponto){
+		if(ponto == null){
+			return;
+		}
+		Graphics draw = panelCadastraPonto.getGraphics();
 		draw.drawOval(ponto.getX() - RAIO, ponto.getY() - RAIO, RAIO * 2, RAIO * 2);
 		draw.drawString(ponto.getNome(), ponto.getX() - RAIO * 2, ponto.getY() - RAIO * 2);
 	}
@@ -142,38 +155,20 @@ public class Applet extends JApplet {
 		draw.drawLine(linha.getX1() + var, linha.getY1() + var, linha.getX2() + var, linha.getY2() + var);
 	}
 
-	private void nomePonto(Panel panel, String textoLabel, Ponto ponto){
-
-		TextField textField = new TextField();
-		textField.setText(textoLabel);
-		textField.setLocation(X/4, 30);
-		textField.setEditable(true);
-		textField.setSize(150, 20);
-
-		ponto.setNome(textoLabel);
-
-		Button botaoDefinirNome = new Button("Definir Nome");
-		botaoDefinirNome.setBounds(X/4 + 160, 30, 100, 20);
-
-		textField.setVisible(true);
-		botaoDefinirNome.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String nome = textField.getText();
-				ponto.setNome(nome);
-			}
-		});
-		panel.add(botaoDefinirNome);
-		panel.add(textField);
+	private static void desenhaPontos(Panel panel, ArrayList<Ponto> listaPontos){
+		Graphics g = panel.getGraphics();
+		Ponto ponto;
+		for(int i = 0; i < listaPontos.size(); i++){
+			ponto = listaPontos.get(i);
+			g.drawOval(ponto.getX() - RAIO, ponto.getY() - RAIO, RAIO * 2, RAIO * 2);
+			g.drawString(ponto.getNome(), ponto.getX() - RAIO * 2, ponto.getY() - RAIO * 2);
+		}
 	}
-
-	private void desenhaPontos(Panel panel, ArrayList<Ponto> listaPontos){
-		Iterator<Ponto> iteradorListaPontos = listaPontos.iterator();
-		Ponto ponto = null;
-		while(iteradorListaPontos.hasNext()){
-			ponto = iteradorListaPontos.next();
-			desenhaPonto(panel, ponto);
+	
+	public void de(){
+		Graphics a = panelCadastraPonto.getGraphics();
+		for(int i = 0; i < 10; i++){
+			a.drawOval(i*10, 20, 30, 30);
 		}
 	}
 }
