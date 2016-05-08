@@ -11,9 +11,20 @@ package util;
 public class Vertice {
 
 	private int grau;
+	private boolean foiVisitado = false;
+	
 	//private ArrayList<Aresta> listaArestas;
 	private Object objeto;
 
+	
+	public boolean foiVisitado() {
+		return foiVisitado;
+	}
+
+	public void setFoiVisitado(boolean foiVisitado) {
+		this.foiVisitado = foiVisitado;
+	}
+	
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Construtor da classe.	
