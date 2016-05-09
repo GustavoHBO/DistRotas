@@ -12,15 +12,20 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import model.Linha;
 import model.Ponto;
 
 public class AppletDistRotas extends JApplet {
@@ -31,10 +36,12 @@ public class AppletDistRotas extends JApplet {
 	private static final long serialVersionUID = 1L;
 	private final int RAIO = 10;
 	private JPanel panelControle = null;
-	private JPanel panelArea = null;
-	private JTextField textFieldNome = null;
+	private static JPanel panelArea = null;
 
-	private ArrayList<Ponto> listaDePontos;
+	private static List<Ponto> listaDePontos;
+	private static List<Linha> listaDeLinhas;
+
+	private JTextField textFieldNome = null;
 
 	/**
 	 * Create the applet.
@@ -42,6 +49,7 @@ public class AppletDistRotas extends JApplet {
 	public AppletDistRotas() {
 
 		listaDePontos = new ArrayList<Ponto>();
+		listaDeLinhas = new ArrayList<Linha>();
 		montarTela();
 	}
 
@@ -81,7 +89,10 @@ public class AppletDistRotas extends JApplet {
 	}
 
 	private void prepararPanelArea(){
-		panelArea = null;
+
+		if(panelArea != null)
+			this.remove(panelArea);
+
 		panelArea = new JPanel();
 		GridBagConstraints gbc_panelArea = new GridBagConstraints();
 		gbc_panelArea.fill = GridBagConstraints.BOTH;
@@ -109,7 +120,6 @@ public class AppletDistRotas extends JApplet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				prepararPanelAreaCadastrarPonto();
-
 			}
 		});
 
@@ -125,7 +135,6 @@ public class AppletDistRotas extends JApplet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				prepararPanelAreaCadastrarAresta();
-
 			}
 		});
 
@@ -135,24 +144,51 @@ public class AppletDistRotas extends JApplet {
 	private void prepararBotaoRemoverPonto(){
 		JButton botaoRemoverPonto = new JButton("Remover Ponto");
 		botaoRemoverPonto.setBounds(44, 110, 127, 33);
+
+		botaoRemoverPonto.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				prepararPanelAreaRemoverPonto();
+			}
+		});
+
 		panelControle.add(botaoRemoverPonto);
 	}
 
 	private void prepararBotaoRemoverAresta(){
 		JButton botaoRemoverAresta = new JButton("Remover Aresta");
 		botaoRemoverAresta.setBounds(44, 154, 127, 33);
+		
+		botaoRemoverAresta.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				prepararPanelAreaRemoverAresta();
+				
+			}
+		});
+		
 		panelControle.add(botaoRemoverAresta);
 	}
 
 	private void prepararBotaoEscolherRota(){
-		JButton btnEscolherRota = new JButton("Escolher Rota");
-		btnEscolherRota.setBounds(44, 198, 127, 33);
-		panelControle.add(btnEscolherRota);
+		JButton botaoEscolherRota = new JButton("Escolher Rota");
+		botaoEscolherRota.setBounds(44, 198, 127, 33);
+		
+		botaoEscolherRota.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				prepararPanelAreaEscolherRota();
+			}
+		});
+		
+		panelControle.add(botaoEscolherRota);
 	}
 
 	private void prepararPanelAreaCadastrarPonto(){
 		prepararPanelArea();
-
 		desenharPontos();
 		Ponto ponto = new Ponto();
 
@@ -186,10 +222,26 @@ public class AppletDistRotas extends JApplet {
 			public void mousePressed(MouseEvent e) {
 				ponto.setX(e.getX());
 				ponto.setY(e.getY());
+				String nome = textFieldNome.getText();
+				if(nome.trim().equals("")){
+					JOptionPane.showMessageDialog(null, "Insira um nome primeiro");
+					return;
+				}
 				ponto.setNome(textFieldNome.getText());
+
+				Iterator<Ponto> it = listaDePontos.iterator();
+				Ponto aux = null;
+				while(it.hasNext()){
+					aux = it.next();
+					if(aux.getNome().equals(ponto.getNome())){
+						JOptionPane.showMessageDialog(null, "Já existe ponto cadastrado com este nome!");
+						return;
+					}
+				}
 				listaDePontos.add(ponto);
 				desenharPonto(ponto);
-
+				JOptionPane.showMessageDialog(null, "Ponto inserido com sucesso");
+				prepararPanelArea();
 			}
 
 			@Override
@@ -226,13 +278,197 @@ public class AppletDistRotas extends JApplet {
 	}
 
 	private void prepararPanelAreaCadastrarAresta(){
-		
+
 		prepararPanelArea();
-		JComboBox<Ponto> comboInicio = new JComboBox<Ponto>();
-		comboInicio.addItem(listaDePontos.get(0));
-		comboInicio.setSize(50, 20);
-		comboInicio.setLocation(120, 20);
+
+		Linha linha = new Linha();
+
+		JComboBox<String> comboInicio = new JComboBox<String>();
+		JComboBox<String> comboFim = new JComboBox<String>();
+
+		for(Ponto ponto : listaDePontos){
+			comboInicio.addItem(ponto.getNome());
+		}
+		comboInicio.setSize(140, 20);
+		comboInicio.setLocation(130, 20);
 		panelArea.add(comboInicio);
+
+		for(Ponto ponto : listaDePontos){
+			comboFim.addItem(ponto.getNome());
+		}
+		comboFim.setSize(140, 20);
+		comboFim.setLocation(130, 60);
+
+		JButton botaoCriarAresta = new JButton("Criar Aresta");
+		botaoCriarAresta.setSize(140, 20);
+		botaoCriarAresta.setLocation(130, 100);
+
+		botaoCriarAresta.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Ponto ponto1, ponto2;
+				if(listaDePontos.size() <= 1){
+					JOptionPane.showMessageDialog(null, "Não existe pontos suficientes!");
+					return;
+				}
+				ponto1 = listaDePontos.get(comboInicio.getSelectedIndex());
+				ponto2 = listaDePontos.get(comboFim.getSelectedIndex());
+				if(ponto1.equals(ponto2)){
+					JOptionPane.showMessageDialog(null, "Você não pode criar uma aresta com inicio e fim iguais");
+					return;
+				} 
+				else {
+					linha.setPonto1(ponto1);
+					linha.setPonto2(ponto2);
+
+					Iterator<Linha> it = listaDeLinhas.iterator();
+					Linha aux;
+					while(it.hasNext()){
+						aux = it.next();
+						if((aux.getPonto1().equals(ponto1) && aux.getPonto2().equals(ponto2)) || (aux.getPonto1().equals(ponto2) && aux.getPonto2().equals(ponto1))){
+							JOptionPane.showMessageDialog(null, "Já existe aresta cadastrada entre os pontos");
+							return;
+						}
+					}
+					JOptionPane.showMessageDialog(null, "Aresta Cadastrada!");
+					listaDeLinhas.add(linha);
+				}
+			}
+		});
+		panelArea.add(botaoCriarAresta);
+		panelArea.add(comboFim);
 	}
 
+	private void prepararPanelAreaRemoverPonto(){
+		prepararPanelArea();
+
+		JComboBox<String> comboRemover = new JComboBox<String>();
+		comboRemover.setSize(140, 20);
+		comboRemover.setLocation(100, 20);
+
+		/*Adicionando os pontos existentes*/
+		for(int i = 0; i < listaDePontos.size(); i++){
+			comboRemover.addItem(listaDePontos.get(i).getNome());
+		}
+
+		panelArea.add(comboRemover);
+
+		JButton botaoRemover = new JButton("Remover");
+		botaoRemover.setSize(100, 20);
+		botaoRemover.setLocation(260, 20);
+
+		botaoRemover.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(listaDePontos.size() == 0)
+					JOptionPane.showMessageDialog(null, "Não existem pontos a serem removidos!");
+				else{
+					listaDePontos.remove(comboRemover.getSelectedIndex());
+					JOptionPane.showMessageDialog(null, "Ponto Removido!");
+					prepararPanelArea();
+				}
+
+			}
+		});
+		panelArea.add(botaoRemover);
+	}
+
+	private void prepararPanelAreaRemoverAresta(){
+		prepararPanelArea();
+
+		JComboBox<String> comboRemover = new JComboBox<String>();
+		comboRemover.setSize(140, 20);
+		comboRemover.setLocation(100, 20);
+
+		/*Adicionando os pontos existentes*/
+		for(int i = 0; i < listaDeLinhas.size(); i++){
+			comboRemover.addItem(listaDeLinhas.get(i).getPonto1().getNome() + " - " + listaDeLinhas.get(i).getPonto2().getNome());
+		}
+
+		panelArea.add(comboRemover);
+
+		JButton botaoRemover = new JButton("Remover");
+		botaoRemover.setSize(100, 20);
+		botaoRemover.setLocation(260, 20);
+
+		botaoRemover.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(listaDeLinhas.size() == 0)
+					JOptionPane.showMessageDialog(null, "Não existem arestas a serem removidas!");
+				else{
+					listaDePontos.remove(comboRemover.getSelectedIndex());
+					JOptionPane.showMessageDialog(null, "Aresta Removida!");
+					prepararPanelArea();
+				}
+
+			}
+		});
+		panelArea.add(botaoRemover);
+	}
+	
+	private void prepararPanelAreaEscolherRota(){
+		prepararPanelArea();
+		
+		JLabel labelGaragem = new JLabel("Garagem");
+		labelGaragem.setSize(100, 20);
+		labelGaragem.setLocation(60, 20);
+		panelArea.add(labelGaragem);
+		
+		JComboBox<String> comboGaragem = new JComboBox<String>();
+		comboGaragem.setSize(140, 20);
+		comboGaragem.setLocation(130, 20);
+		panelArea.add(comboGaragem);
+		
+		JLabel labelColeta = new JLabel("Coleta");
+		labelColeta.setSize(100, 20);
+		labelColeta.setLocation(60, 60);
+		panelArea.add(labelColeta);
+		
+		JComboBox<String> comboColeta = new JComboBox<String>();
+		comboColeta.setSize(140, 20);
+		comboColeta.setLocation(130, 60);
+		panelArea.add(comboColeta);
+		
+		JLabel labelBanco = new JLabel("Banco");
+		labelBanco.setSize(100, 20);
+		labelBanco.setLocation(60, 100);
+		panelArea.add(labelBanco);
+		
+		JComboBox<String> comboBanco = new JComboBox<String>();
+		comboBanco.setSize(140, 20);
+		comboBanco.setLocation(130, 100);
+		panelArea.add(comboBanco);
+		
+		JButton botaoGerarRota = new JButton("Gerar Rota");
+		botaoGerarRota.setSize(140, 20);
+		botaoGerarRota.setLocation(130, 140);
+		
+		botaoGerarRota.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(listaDePontos.size() <= 1){
+					JOptionPane.showMessageDialog(null, "Não existe pontos suficientes!");
+					return;
+				}
+				
+				Ponto pontoGaragem = listaDePontos.get(comboGaragem.getSelectedIndex());
+				Ponto pontoColeta = listaDePontos.get(comboColeta.getSelectedIndex());
+				Ponto pontoBanco = listaDePontos.get(comboBanco.getSelectedIndex());
+				
+				if(pontoGaragem.equals(pontoColeta)){
+					JOptionPane.showMessageDialog(null, "O ponto de coleta não pode ser o mesmo que a garagem!");
+					return;
+				}
+				
+			}
+		});
+		
+		panelArea.add(botaoGerarRota);
+	}
 }
