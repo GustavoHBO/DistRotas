@@ -12,8 +12,6 @@ public class Vertice {
 
 	private int grau;
 	private boolean foiVisitado = false;
-	
-	//private ArrayList<Aresta> listaArestas;
 	private Object objeto;
 
 	
