@@ -1,7 +1,9 @@
 package applet;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,15 +27,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import controller.Controller;
+import exception.CaminhoInexistenteException;
+import exception.NomeInvalidoException;
 import model.Linha;
 import model.Ponto;
+import util.Vertice;
 
 public class AppletDistRotas extends JApplet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	private Controller controller = null;
 	private final int RAIO = 10;
 	private JPanel panelControle = null;
 	private static JPanel panelArea = null;
@@ -50,6 +54,7 @@ public class AppletDistRotas extends JApplet {
 
 		listaDePontos = new ArrayList<Ponto>();
 		listaDeLinhas = new ArrayList<Linha>();
+		this.controller = Controller.getInstance();
 		montarTela();
 	}
 
@@ -86,6 +91,7 @@ public class AppletDistRotas extends JApplet {
 		prepararBotaoRemoverPonto();
 		prepararBotaoRemoverAresta();
 		prepararBotaoEscolherRota();
+		prepararBotaoMostrarGrafo();
 	}
 
 	private void prepararPanelArea(){
@@ -94,26 +100,20 @@ public class AppletDistRotas extends JApplet {
 			this.remove(panelArea);
 
 		panelArea = new JPanel();
-		GridBagConstraints gbc_panelArea = new GridBagConstraints();
-		gbc_panelArea.fill = GridBagConstraints.BOTH;
-		gbc_panelArea.gridx = 1;
-		gbc_panelArea.gridy = 0;
-		getContentPane().add(panelArea, gbc_panelArea);
-		GroupLayout gl_panelArea = new GroupLayout(panelArea);
-		gl_panelArea.setHorizontalGroup(
-				gl_panelArea.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 428, Short.MAX_VALUE)
-				);
-		gl_panelArea.setVerticalGroup(
-				gl_panelArea.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 450, Short.MAX_VALUE)
-				);
-		panelArea.setLayout(gl_panelArea);
+		GridBagConstraints layoutPanel = new GridBagConstraints();
+		layoutPanel.fill = GridBagConstraints.BOTH;
+		layoutPanel.gridx = 1;
+		layoutPanel.gridy = 0;
+		getContentPane().add(panelArea, layoutPanel);
+		GroupLayout layoutGroupPanel = new GroupLayout(panelArea);
+		layoutGroupPanel.setHorizontalGroup(layoutGroupPanel.createParallelGroup(Alignment.LEADING).addGap(0, 428, Short.MAX_VALUE));
+		layoutGroupPanel.setVerticalGroup(layoutGroupPanel.createParallelGroup(Alignment.LEADING).addGap(0, 450, Short.MAX_VALUE));
+		panelArea.setLayout(null);
 	}
 
 	private void prepararBotaoCadastrarPonto(){
 		JButton botaoCadastrarPonto = new JButton("Cadastrar Ponto");
-		botaoCadastrarPonto.setBounds(44, 22, 127, 33);
+		botaoCadastrarPonto.setBounds(35, 22, 140, 33);
 
 		botaoCadastrarPonto.addActionListener(new ActionListener() {
 
@@ -128,7 +128,7 @@ public class AppletDistRotas extends JApplet {
 
 	private void prepararBotaoCadastrarAresta(){
 		JButton botaoCadastrarAresta = new JButton("Cadastrar Aresta");
-		botaoCadastrarAresta.setBounds(44, 66, 127, 33);
+		botaoCadastrarAresta.setBounds(35, 66, 140, 33);
 
 		botaoCadastrarAresta.addActionListener(new ActionListener() {
 
@@ -143,7 +143,7 @@ public class AppletDistRotas extends JApplet {
 
 	private void prepararBotaoRemoverPonto(){
 		JButton botaoRemoverPonto = new JButton("Remover Ponto");
-		botaoRemoverPonto.setBounds(44, 110, 127, 33);
+		botaoRemoverPonto.setBounds(35, 110, 140, 33);
 
 		botaoRemoverPonto.addActionListener(new ActionListener() {
 
@@ -158,50 +158,65 @@ public class AppletDistRotas extends JApplet {
 
 	private void prepararBotaoRemoverAresta(){
 		JButton botaoRemoverAresta = new JButton("Remover Aresta");
-		botaoRemoverAresta.setBounds(44, 154, 127, 33);
-		
+		botaoRemoverAresta.setBounds(35, 154, 140, 33);
+
 		botaoRemoverAresta.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				prepararPanelAreaRemoverAresta();
-				
+
 			}
 		});
-		
+
 		panelControle.add(botaoRemoverAresta);
 	}
 
 	private void prepararBotaoEscolherRota(){
 		JButton botaoEscolherRota = new JButton("Escolher Rota");
-		botaoEscolherRota.setBounds(44, 198, 127, 33);
-		
+		botaoEscolherRota.setBounds(35, 198, 140, 33);
+
 		botaoEscolherRota.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				prepararPanelAreaEscolherRota();
 			}
 		});
-		
+
 		panelControle.add(botaoEscolherRota);
+	}
+
+	private void prepararBotaoMostrarGrafo(){
+		JButton botaoMostrarGrafo = new JButton("Mostrar Grafo");
+		botaoMostrarGrafo.setBounds(35, 243, 140, 33);
+
+		botaoMostrarGrafo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				t();
+				desenharLinhas();
+				desenharPontos(listaDePontos);
+				// TODO
+			}
+		});
+
+		panelControle.add(botaoMostrarGrafo);
 	}
 
 	private void prepararPanelAreaCadastrarPonto(){
 		prepararPanelArea();
-		desenharPontos();
 		Ponto ponto = new Ponto();
 
 		textFieldNome = new JTextField("Insira o nome aqui!");
 		textFieldNome.setSize(120, 20);
 		textFieldNome.setLocation(130, 20);
-
 		textFieldNome.addFocusListener(new FocusListener() {
 
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				// Evento não utilizado.
-
 			}
 
 			@Override
@@ -229,25 +244,21 @@ public class AppletDistRotas extends JApplet {
 				}
 				ponto.setNome(textFieldNome.getText());
 
-				Iterator<Ponto> it = listaDePontos.iterator();
-				Ponto aux = null;
-				while(it.hasNext()){
-					aux = it.next();
-					if(aux.getNome().equals(ponto.getNome())){
-						JOptionPane.showMessageDialog(null, "Já existe ponto cadastrado com este nome!");
-						return;
-					}
+				try {
+					controller.cadastrarPonto(ponto.getNome());
+					listaDePontos.add(ponto);
+					desenharPonto(ponto);
+					JOptionPane.showMessageDialog(null, "Ponto inserido com sucesso");
+					prepararPanelArea();
+				} catch (NomeInvalidoException e1) {
+					JOptionPane.showMessageDialog(null, "Já existe ponto com o nome cadastrado!");
 				}
-				listaDePontos.add(ponto);
-				desenharPonto(ponto);
-				JOptionPane.showMessageDialog(null, "Ponto inserido com sucesso");
-				prepararPanelArea();
+
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
 				// Evento não utilizado.
-
 			}
 
 			@Override
@@ -269,12 +280,6 @@ public class AppletDistRotas extends JApplet {
 		Graphics grap = panelArea.getGraphics();
 		grap.drawOval(ponto.getX() - RAIO, ponto.getY() - RAIO, RAIO * 2, RAIO * 2);
 		grap.drawString(ponto.getNome(), ponto.getX() - RAIO - 5, ponto.getY() - RAIO - 5);
-	}
-
-	private void desenharPontos(){
-		for(int i = 0; i < listaDePontos.size(); i++){
-			desenharPonto(listaDePontos.get(i));
-		}
 	}
 
 	private void prepararPanelAreaCadastrarAresta(){
@@ -299,9 +304,58 @@ public class AppletDistRotas extends JApplet {
 		comboFim.setSize(140, 20);
 		comboFim.setLocation(130, 60);
 
+		JLabel labelPeso = new JLabel("Peso");
+		labelPeso.setBounds(190, 80, 40, 40);
+		panelArea.add(labelPeso);
+
+		JTextField textNumber = new JTextField();
+		textNumber.setText("1");
+		textNumber.setHorizontalAlignment(JLabel.CENTER);// Posiciona o texto no centro do Label.
+		textNumber.setEditable(false);
+		textNumber.setBounds(180, 110, 50, 20);
+		panelArea.add(textNumber);
+
+		JButton botaoMenos = new JButton("-");
+		botaoMenos.setBounds(110, 110, 50, 20);
+
+		botaoMenos.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String valorString = textNumber.getText();
+				int valorInteiro = Integer.parseInt(valorString);
+
+				if(valorInteiro == 1){
+					return;
+				} else{
+					textNumber.setText(Integer.toString(--valorInteiro));
+				}
+
+			}
+		});
+
+		panelArea.add(botaoMenos);
+
+		JButton botaoMais = new JButton("+");
+		botaoMais.setBounds(250, 110, 50, 20);
+
+		botaoMais.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String valorString = textNumber.getText();
+				int valorInteiro = Integer.parseInt(valorString);
+
+				textNumber.setText(Integer.toString(++valorInteiro));
+
+			}
+		});
+
+		panelArea.add(botaoMais);
+
 		JButton botaoCriarAresta = new JButton("Criar Aresta");
 		botaoCriarAresta.setSize(140, 20);
-		botaoCriarAresta.setLocation(130, 100);
+		botaoCriarAresta.setLocation(130, 160);
 
 		botaoCriarAresta.addActionListener(new ActionListener() {
 
@@ -319,8 +373,11 @@ public class AppletDistRotas extends JApplet {
 					return;
 				} 
 				else {
+					String valorString = textNumber.getText();
+					int valorInteiro = Integer.parseInt(valorString);
 					linha.setPonto1(ponto1);
 					linha.setPonto2(ponto2);
+					linha.setCusto(valorInteiro);
 
 					Iterator<Linha> it = listaDeLinhas.iterator();
 					Linha aux;
@@ -331,8 +388,11 @@ public class AppletDistRotas extends JApplet {
 							return;
 						}
 					}
-					JOptionPane.showMessageDialog(null, "Aresta Cadastrada!");
+
+					controller.cadastrarCaminho(ponto1.getNome(), ponto2.getNome(), linha.getCusto());
 					listaDeLinhas.add(linha);
+					JOptionPane.showMessageDialog(null, "Aresta Cadastrada!");
+					prepararPanelArea();
 				}
 			}
 		});
@@ -365,7 +425,14 @@ public class AppletDistRotas extends JApplet {
 				if(listaDePontos.size() == 0)
 					JOptionPane.showMessageDialog(null, "Não existem pontos a serem removidos!");
 				else{
-					listaDePontos.remove(comboRemover.getSelectedIndex());
+					Ponto ponto = listaDePontos.remove(comboRemover.getSelectedIndex());
+					Linha linha = null;
+					for(int i = 0; i < listaDeLinhas.size(); i++){
+						linha = listaDeLinhas.get(i);
+						if(linha.getPonto1().equals(ponto) || linha.getPonto2().equals(ponto)){
+							listaDeLinhas.remove(i);
+						}
+					}
 					JOptionPane.showMessageDialog(null, "Ponto Removido!");
 					prepararPanelArea();
 				}
@@ -400,7 +467,8 @@ public class AppletDistRotas extends JApplet {
 				if(listaDeLinhas.size() == 0)
 					JOptionPane.showMessageDialog(null, "Não existem arestas a serem removidas!");
 				else{
-					listaDePontos.remove(comboRemover.getSelectedIndex());
+					Linha linha = listaDeLinhas.remove(comboRemover.getSelectedIndex());
+					controller.removerCaminho(linha.getPonto1().getNome(), linha.getPonto2().getNome());
 					JOptionPane.showMessageDialog(null, "Aresta Removida!");
 					prepararPanelArea();
 				}
@@ -409,66 +477,190 @@ public class AppletDistRotas extends JApplet {
 		});
 		panelArea.add(botaoRemover);
 	}
-	
+
 	private void prepararPanelAreaEscolherRota(){
 		prepararPanelArea();
-		
+
 		JLabel labelGaragem = new JLabel("Garagem");
 		labelGaragem.setSize(100, 20);
 		labelGaragem.setLocation(60, 20);
 		panelArea.add(labelGaragem);
-		
+
 		JComboBox<String> comboGaragem = new JComboBox<String>();
 		comboGaragem.setSize(140, 20);
 		comboGaragem.setLocation(130, 20);
+		/*Adicionando os pontos existentes*/
+		for(int i = 0; i < listaDePontos.size(); i++){
+			comboGaragem.addItem(listaDePontos.get(i).getNome());
+		}
 		panelArea.add(comboGaragem);
-		
+
 		JLabel labelColeta = new JLabel("Coleta");
 		labelColeta.setSize(100, 20);
 		labelColeta.setLocation(60, 60);
 		panelArea.add(labelColeta);
-		
+
 		JComboBox<String> comboColeta = new JComboBox<String>();
 		comboColeta.setSize(140, 20);
 		comboColeta.setLocation(130, 60);
+		/*Adicionando os pontos existentes*/
+		for(int i = 0; i < listaDePontos.size(); i++){
+			comboColeta.addItem(listaDePontos.get(i).getNome());
+		}
 		panelArea.add(comboColeta);
-		
+
 		JLabel labelBanco = new JLabel("Banco");
 		labelBanco.setSize(100, 20);
 		labelBanco.setLocation(60, 100);
 		panelArea.add(labelBanco);
-		
+
 		JComboBox<String> comboBanco = new JComboBox<String>();
 		comboBanco.setSize(140, 20);
 		comboBanco.setLocation(130, 100);
+		/*Adicionando os pontos existentes*/
+		for(int i = 0; i < listaDePontos.size(); i++){
+			comboBanco.addItem(listaDePontos.get(i).getNome());
+		}
 		panelArea.add(comboBanco);
-		
+
 		JButton botaoGerarRota = new JButton("Gerar Rota");
 		botaoGerarRota.setSize(140, 20);
 		botaoGerarRota.setLocation(130, 140);
-		
+
 		botaoGerarRota.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				if(listaDePontos.size() <= 1){
+
+				if(listaDePontos.size() <= 0){
 					JOptionPane.showMessageDialog(null, "Não existe pontos suficientes!");
 					return;
 				}
-				
+
 				Ponto pontoGaragem = listaDePontos.get(comboGaragem.getSelectedIndex());
 				Ponto pontoColeta = listaDePontos.get(comboColeta.getSelectedIndex());
 				Ponto pontoBanco = listaDePontos.get(comboBanco.getSelectedIndex());
-				
+
 				if(pontoGaragem.equals(pontoColeta)){
 					JOptionPane.showMessageDialog(null, "O ponto de coleta não pode ser o mesmo que a garagem!");
 					return;
+				} else if(pontoColeta.equals(pontoBanco)){
+					JOptionPane.showMessageDialog(null, "O ponto de coleta não pode ser o mesmo que o banco!");
+					return;
 				}
+
+				try {
 				
+					desenharGrafo(pontoGaragem.getNome(), pontoColeta.getNome());
+					desenharGrafo(pontoColeta.getNome(), pontoBanco.getNome());
+				} catch (CaminhoInexistenteException e1) {
+					JOptionPane.showMessageDialog(null, "Não exite o caminho entre os pontos!");
+				}
+				//TODO Verificar como ser escolhidos
+
 			}
 		});
-		
+
 		panelArea.add(botaoGerarRota);
+	}
+
+	private void desenharPontos(List<Ponto> lista){
+		Graphics gra = panelArea.getGraphics();
+		Iterator<Ponto> it = lista.iterator();
+		Ponto ponto = null;
+		while(it.hasNext()){
+			ponto = it.next();
+			gra.drawString(ponto.getNome(), ponto.getX() - RAIO - 5, ponto.getY() - RAIO - 5);
+			gra.drawOval(ponto.getX() - RAIO, ponto.getY() - RAIO, RAIO * 2, RAIO * 2);
+		}
+	}
+
+	private void desenharLinhas(){
+		Graphics gra = panelArea.getGraphics();
+		//gra.setStroke(new BasicStroke(2));
+		Iterator<Linha> it = listaDeLinhas.iterator();
+		Linha linha = null;
+		while(it.hasNext()){
+			linha = it.next();
+			gra.drawString(Integer.toString(linha.getCusto()), (linha.getPonto1().getX() + linha.getPonto2().getX())/2, ((linha.getPonto1().getY() + linha.getPonto2().getY())/2) + 10);
+			gra.drawLine(linha.getPonto1().getX(), linha.getPonto1().getY(), linha.getPonto2().getX(), linha.getPonto2().getY());
+		}
+	}
+
+	private void desenharLinha(Linha linha){
+		Graphics2D gra = (Graphics2D)panelArea.getGraphics();
+		gra.setStroke(new BasicStroke(2));
+
+		gra.drawString(Integer.toString(linha.getCusto()), (linha.getPonto1().getX() + linha.getPonto2().getX())/2, ((linha.getPonto1().getY() + linha.getPonto2().getY())/2));
+		gra.drawLine(linha.getPonto1().getX(), linha.getPonto1().getY(), linha.getPonto2().getX(), linha.getPonto2().getY());
+	}
+
+	private void desenharGrafo(String nome1, String nome2) throws CaminhoInexistenteException{
+		List<List<Vertice>> caminhos = controller.menorCaminho(nome1, nome2);
+		Iterator<Vertice> it = null;
+		Ponto ponto = null, ponto2 = null;
+		Linha linha = null;
+
+		for(List<Vertice> caminho : caminhos){
+			if(caminho == null){
+				throw new CaminhoInexistenteException();
+			}
+			it = caminho.iterator();
+			while(it.hasNext()){
+				ponto = buscarPonto(it.next().getObjeto().toString());
+				System.out.println(ponto.getNome());
+				desenharPonto(ponto);
+				if(ponto2 == null){
+					ponto2 = ponto;
+				} else{
+					linha = buscarLinha(ponto, ponto2);
+					desenharLinha(linha);
+					ponto2 = ponto;
+				}
+			}
+			System.out.println("");
+			ponto2 = null;
+		}
+	}
+
+	private Ponto buscarPonto(String nome){
+		Ponto ponto = null;
+		Iterator<Ponto> it = listaDePontos.iterator();
+		while(it.hasNext()){
+			ponto = it.next();
+			if(ponto.getNome().equals(nome))
+				return ponto;
+		}
+		return null;
+	}
+
+	private Linha buscarLinha(Ponto ponto1, Ponto ponto2){
+		Iterator<Linha> it = listaDeLinhas.iterator();
+		Linha linha = null;
+		while(it.hasNext()){
+			linha = it.next();
+			if(linha.getPonto1().equals(ponto1) && linha.getPonto2().equals(ponto2)){
+				return linha;
+			}
+			else if(linha.getPonto1().equals(ponto2) && linha.getPonto2().equals(ponto1)){
+				return linha;
+			}
+		}
+		return null;
+	}
+	
+	private void t(){
+		//this.remove(panelArea);
+		/*panelArea = new JPanel();
+		GridBagConstraints layoutPanel = new GridBagConstraints();
+		layoutPanel.fill = GridBagConstraints.BOTH;
+		layoutPanel.gridx = 1;
+		layoutPanel.gridy = 0;
+		getContentPane().add(panelArea, layoutPanel);
+		GroupLayout layoutGroupPanel = new GroupLayout(panelArea);
+		layoutGroupPanel.setHorizontalGroup(layoutGroupPanel.createParallelGroup(Alignment.LEADING).addGap(0, 428, Short.MAX_VALUE));
+		layoutGroupPanel.setVerticalGroup(layoutGroupPanel.createParallelGroup(Alignment.LEADING).addGap(0, 450, Short.MAX_VALUE));
+		panelArea.setLayout(null);*/
+		
 	}
 }

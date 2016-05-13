@@ -4,6 +4,7 @@ public class Linha {
 
 	private Ponto ponto1 = null;
 	private Ponto ponto2 = null;
+	private int custo = 0;
 
 	public Linha(){
 	}
@@ -38,6 +39,22 @@ public class Linha {
 	 */
 	public void setPonto2(Ponto ponto2) {
 		this.ponto2 = ponto2;
+	}
+
+	/**
+	 * Retorna o conteúdo de custo.
+	 * @return custo - Conteúdo de custo.
+	 */
+	public int getCusto() {
+		return custo;
+	}
+
+	/**
+	 * Altera o conteúdo de custo.
+	 * @param custo - Novo conteúdo de custo.
+	 */
+	public void setCusto(int custo) {
+		this.custo = custo;
 	}
 
 }
