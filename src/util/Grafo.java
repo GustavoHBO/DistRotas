@@ -2,13 +2,14 @@ package util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Grafo{
 
 	private int numVertices;
 	private int numArestas;
-	private ArrayList<Vertice> listaVertices;
-	private ArrayList<Aresta> listaArestas;
+	private List<Vertice> listaVertices;
+	private List<Aresta> listaArestas;
 
 	/**
 	 * Construtor, inicializa os atributos da classe.
@@ -27,10 +28,10 @@ public class Grafo{
 		return numArestas;
 	}
 
-	public ArrayList<Vertice> getVertices(){
+	public List<Vertice> getVertices(){
 		return listaVertices;
 	}
-	public ArrayList<Aresta> getArestas(){
+	public List<Aresta> getArestas(){
 		return listaArestas;
 	}
 
@@ -68,50 +69,100 @@ public class Grafo{
 	}
 
 	public void removerAresta(Aresta a) {
-		Iterator<Aresta> iterador = listaArestas.iterator();
-		Aresta aresta;
-
-		while(iterador.hasNext()){// Procura a aresta a ser removida.
-			aresta = iterador.next();
-			if(aresta.equals(a)){// Caso a aresta exista ela é removida.
-				listaArestas.remove(a);
-				numArestas--;
-			}
+		Aresta aresta = buscarAresta(a.getVertice1(), a.getVertice2());
+		if(aresta != null){
+			listaArestas.remove(aresta);
 		}
+
 	}
 
-	/*public void removerVertice(Object o) {
+	/**
+	 * Remove o vértice a partir do objeto do vértice.
+	 * @param o - Objeto do vértice a ser removido.
+	 * @return vertice - Vértice removido || null - Caso o vértice não seja encontrado.
+	 */
+	public Vertice removerVertice(Object o){
+		Iterator<Aresta> it = listaArestas.iterator();
+
+		Vertice vertice = buscarVertice(o);
+
+		if(vertice == null){
+			return null;
+		}
+		Aresta aresta = null;
+		while(it.hasNext()){
+			aresta = it.next();
+			if(aresta.getVertice1().equals(vertice) || aresta.getVertice2().equals(vertice)){
+				listaArestas.remove(aresta);
+			}
+		}
+		listaVertices.remove(vertice);
+		return vertice;
+	}
+
+
+	/**
+	 * Busca o vértice a partir do objeto armazenado nele.
+	 * @param objeto - Objeto do vértice procurado.
+	 * @return vertice - Vértice procurado | null - Caso o vértice não seja encontrado.
+	 */
+	public Vertice buscarVertice(Object objeto){
 		Iterator<Vertice> it = listaVertices.iterator();
-		Iterator<Aresta> itArestas = listaArestas.iterator();
-		Vertice vertice = null, aux = null;
+		Vertice vertice = null;
+		while(it.hasNext()){
+			vertice = it.next();
+			if(vertice.getObjeto().equals(objeto)){
+				return vertice;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Busca a aresta a partir dos vértices que determinam o inicio e fim da aresta.
+	 * @param vertice1 - Vértice ponto da aresta.
+	 * @param vertice2 - Vértice ponto da aresta.
+	 * @return aresta - Aresta procurada || null - Caso a aresta não seja encontrada.
+	 */
+	public Aresta buscarAresta(Vertice vertice1, Vertice vertice2){
+		Iterator<Aresta> it = listaArestas.iterator();
+		Aresta aresta = null;
+		while(it.hasNext()){
+			aresta = it.next();
+			if(aresta.getVertice1().equals(vertice1) && aresta.getVertice2().equals(vertice2)){
+				return aresta;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Retorna uma lista de todas as aresta incidentes no vértice encontrado.
+	 * @param nome - Nome do vértice.
+	 * @return arestasIncidentes - Todas as arestas incidentes no vértice encontrado.
+	 */
+	public List<Aresta> arestasIncidentes(String nome){
+		List<Aresta> arestasIncidentes = new ArrayList<Aresta>();
+		Iterator<Aresta> it = listaArestas.iterator();
 		Aresta aresta = null;
 
 		while(it.hasNext()){
-			vertice = it.next();
-			if(vertice.getObjeto().equals(o)){
-				while(itArestas.hasNext()){
-					aresta = itArestas.next();
-					if (aresta.getVertice1().equals(vertice)){
-						listaArestas.remove(aresta);
-						aux = aresta.getVertice2();
-						aux.setGrau(aux.getGrau() - 1);
-
-					} else if (aresta.getVertice2().equals(vertice)){
-						listaArestas.remove(aresta);
-						aux = aresta.getVertice1();
-						aux.setGrau(aux.getGrau() - 1);
-					}
-				}
-				listaVertices.remove(vertice);
-				numVertices--;
-				if(vertice == inicio){
-					if(listaVertices.size() >= 1){
-						inicio = listaVertices.get(0);
-					}else
-						inicio = null;
-				}
-				return;
+			aresta = it.next();
+			if(aresta.getVertice1().getObjeto().equals(nome) || aresta.getVertice2().getObjeto().equals(nome)){
+				arestasIncidentes.add(aresta);
 			}
 		}
-	}*/
+		if(arestasIncidentes.size() == 0){
+			return null;
+		}
+		return arestasIncidentes;
+	}
+
+	/**
+	 * Retorna um operador Dijkstra do grafo recebido.
+	 * @return dijkstra - Operado dijkstra do grafo.
+	 */
+	public Dijkstra menorCaminho(){
+		return new Dijkstra(this);
+	}
 }

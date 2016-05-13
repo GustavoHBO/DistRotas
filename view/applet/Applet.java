@@ -44,6 +44,8 @@ public class Applet extends JApplet {
 	}
 
 	private void preparaPanelCadastraPonto(){
+		if(panelPrincipal != null)
+			this.remove(panelPrincipal);
 		panelCadastraPonto = new Panel(null);
 		panelCadastraPonto.setSize(X, Y);
 		panelCadastraPonto.setVisible(true);
@@ -88,53 +90,34 @@ public class Applet extends JApplet {
 	private void cadastraPonto(){
 
 		Ponto ponto = new Ponto();
-		panelCadastraPonto.setVisible(true);
-		panelPrincipal.setVisible(false);
+		ponto.setNome("Alguem 1");
+		ponto.setX(50);
+		ponto.setY(50);
+		listaDePontos.add(ponto);
 		
-		Button botaoVoltar = new Button("Voltar ao Inicio");
-		botaoVoltar.setBounds(X - 120, Y - 100, 100, 50);
-		botaoVoltar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				panelPrincipal.setVisible(true);
-				panelCadastraPonto.setVisible(false);
-				return;
-			}
-		});
-		panelCadastraPonto.add(botaoVoltar);
+		ponto.setNome("Alguem 2");
+		ponto.setX(70);
+		ponto.setY(50);
+		listaDePontos.add(ponto);
 		
-		panelCadastraPonto.addMouseListener(new MouseListener(){
-
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				// Método não utilizado.
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-				// Método não utilizado.
-			}
-
-			@Override
-			public void mouseExited(MouseEvent arg0) {
-				// Método não utilizado.
-			}
-
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				desenhaPontos(panelCadastraPonto, listaDePontos);
-				ponto.setNome(textFieldNome.getText());
-				ponto.setX(arg0.getX());
-				ponto.setY(arg0.getY());
-				listaDePontos.add(ponto);
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				// Método não utilizado.
-			}
-		});
+		ponto.setNome("Alguem 3");
+		ponto.setX(90);
+		ponto.setY(50);
+		listaDePontos.add(ponto);
+		
+		ponto.setNome("Alguem 4");
+		ponto.setX(110);
+		ponto.setY(50);
+		listaDePontos.add(ponto);
+		
+		ponto.setNome("Alguem 5");
+		ponto.setX(130);
+		ponto.setY(50);
+		listaDePontos.add(ponto);
+		
+		for(int i = 0; i < listaDePontos.size(); i++){
+			desenhaPonto(panelCadastraPonto, listaDePontos.get(i));
+		}
 	}
 
 	private static void desenhaPonto(Panel panel, Ponto ponto){
@@ -149,10 +132,10 @@ public class Applet extends JApplet {
 	private void desenhaLinha(Panel panel, Linha linha){
 		Graphics draw = panel.getGraphics();
 		int var = 1;
-		draw.drawLine(linha.getX1(), linha.getY1(), linha.getX2(), linha.getY2());
-		draw.drawLine(linha.getX1() + var, linha.getY1() + var, linha.getX2() + var, linha.getY2() + var);
-		var++;
-		draw.drawLine(linha.getX1() + var, linha.getY1() + var, linha.getX2() + var, linha.getY2() + var);
+//		draw.drawLine(linha.getX1(), linha.getY1(), linha.getX2(), linha.getY2());
+//		draw.drawLine(linha.getX1() + var, linha.getY1() + var, linha.getX2() + var, linha.getY2() + var);
+//		var++;
+//		draw.drawLine(linha.getX1() + var, linha.getY1() + var, linha.getX2() + var, linha.getY2() + var);
 	}
 
 	private static void desenhaPontos(Panel panel, ArrayList<Ponto> listaPontos){
