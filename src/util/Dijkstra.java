@@ -1,3 +1,14 @@
+/*******************************************************************************
+Autor: Gustavo Henrique.
+Autor: Leonardo Melo.
+Componente Curricular: MI - Programação.
+Concluído em: 14/05/2016
+Declaro que este código foi elaborado por mim e minha dupla e não contém nenhum
+trecho de código de outro colega ou de outro autor, tais como provindos de livros e
+apostilas, e páginas ou documentos eletrônicos da Internet. Qualquer trecho de código
+de outra autoria que não a minha está destacado com uma citação para o autor e a fonte
+do código, e estou ciente que estes trechos não serão considerados para fins de avaliação.
+ ******************************************************************************************/
 package util;
 
 import java.util.ArrayList;
@@ -9,6 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Classe do algoritmo de Dijkstra, responsável por descobrir o menor caminho em um grafo.
+ * @author Gustavo Henrique.
+ * @author Leonardo Melo.
+ */
 public class Dijkstra {
 
 	private final List<Aresta> arestas;
@@ -18,10 +34,16 @@ public class Dijkstra {
 	private Map<Vertice, ArrayList<Vertice>> antecessores;
 	private Map<Vertice, Integer> peso;
 
+	/*______________________________________________________________________________________________________________________________*/
+	/**
+	 * Construtor da classe, recebe o grafo a ser utilizado no algoritmo.
+	 * @param grafo - Grafo utilizado no algoritmo.
+	 */
 	public Dijkstra(Grafo grafo) {
 		this.arestas = new ArrayList<Aresta>(grafo.getArestas());
 	}
-	
+
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Gera as menores distâncias da raiz para cada outro vértice conexo do grafo 
 	 * @param Vertice - Vértice de origem
@@ -42,6 +64,7 @@ public class Dijkstra {
 		}
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Acha a distância mínima até o nó
 	 * @param Vertice - Vertice
@@ -58,11 +81,12 @@ public class Dijkstra {
 				nosNaoVisitados.add(target);
 			}else if(getMenorDistancia(target) == getMenorDistancia(no) + getDistancia(no, target)){
 				antecessores.get(target).add(no);
-	      }
+			}
 		}
 
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método para retorno do peso da aresta entre nós adjacentes
 	 * @param Vertice - Nó do grafo
@@ -79,6 +103,7 @@ public class Dijkstra {
 		throw new RuntimeException("Should not happen");
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método que descobre todos os vértices adjacentes a certo vértice
 	 * @param Vertice - Vértice do grafo
@@ -95,6 +120,7 @@ public class Dijkstra {
 		return adjacentes;
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método para cálculo do vértice com a menor distância
 	 * @param Set<Vertice> - Lista de Vértices
@@ -113,7 +139,8 @@ public class Dijkstra {
 		}
 		return minimo;
 	}
-	
+
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Verifica se o nó já foi visitado
 	 * @return Boolean - Se já foi visitado
@@ -122,6 +149,7 @@ public class Dijkstra {
 		return nosVisitados.contains(vertice);
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Retorna o valor da menor distância já calculada
 	 * @param Vertice - Vértice do grafo
@@ -136,7 +164,7 @@ public class Dijkstra {
 		}
 	}
 
-
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método que retorna todos os caminhos mínimos 
 	 * @param Vertice - Vértice origem
@@ -171,5 +199,6 @@ public class Dijkstra {
 		listaResultados.add(caminho);
 		return listaResultados;
 	}
+	/*______________________________________________________________________________________________________________________________*/
 
 } 

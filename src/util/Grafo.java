@@ -1,3 +1,14 @@
+/*******************************************************************************
+Autor: Gustavo Henrique.
+Autor: Leonardo Melo.
+Componente Curricular: MI - Programação.
+Concluído em: 14/05/2016
+Declaro que este código foi elaborado por mim e minha dupla e não contém nenhum
+trecho de código de outro colega ou de outro autor, tais como provindos de livros e
+apostilas, e páginas ou documentos eletrônicos da Internet. Qualquer trecho de código
+de outra autoria que não a minha está destacado com uma citação para o autor e a fonte
+do código, e estou ciente que estes trechos não serão considerados para fins de avaliação.
+ ******************************************************************************************/
 package util;
 
 import java.util.ArrayList;
@@ -11,6 +22,7 @@ public class Grafo{
 	private List<Vertice> listaVertices;
 	private List<Aresta> listaArestas;
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Construtor, inicializa os atributos da classe.
 	 */
@@ -20,7 +32,8 @@ public class Grafo{
 		listaVertices = new ArrayList<Vertice>();
 		listaArestas = new ArrayList<Aresta>();
 	}
-	
+
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método para retorno da quantidade de vértices do grafo
 	 * @return int - Número de vértices do grafo
@@ -29,6 +42,7 @@ public class Grafo{
 		return numVertices;
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método para retorno da quantidade de arestas do grafo
 	 * @return int - Número de arestas do grafo
@@ -36,7 +50,8 @@ public class Grafo{
 	public int numArestas() {
 		return numArestas;
 	}
-	
+
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método para retorno dos vértices do grafo
 	 * @return List<Vertice> - Lista de todos os vértices do grafo
@@ -44,7 +59,8 @@ public class Grafo{
 	public List<Vertice> getVertices(){
 		return listaVertices;
 	}
-	
+
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método para retorno das arestas do grafo
 	 * @return List<Aresta> - Lista de todas as arestas do grafo
@@ -53,6 +69,7 @@ public class Grafo{
 		return listaArestas;
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Remove o vértice a partir do objeto do vértice.
 	 * @param Object - Objeto inserido
@@ -69,6 +86,7 @@ public class Grafo{
 		return vertice;
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Método para inserir uma aresta orientada
 	 * @param Vertice - Vértice de origem
@@ -87,7 +105,8 @@ public class Grafo{
 		listaArestas.add(aresta);
 
 	}
-	
+
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Inserir no grafouma aresta não orientada
 	 * @param Vertice - Vértice
@@ -97,8 +116,9 @@ public class Grafo{
 	public void inserirArestaNaoOrientada(Vertice v, Vertice w, int peso) {
 		inserirAresta(v , w , peso);
 		inserirAresta(w , v , peso);
-
 	}
+
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Remove a aresta
 	 * @param Aresta - Aresta do grafo
@@ -111,6 +131,7 @@ public class Grafo{
 
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Remove o vértice a partir do objeto do vértice.
 	 * @param Object - Objeto do vértice a ser removido.
@@ -135,7 +156,7 @@ public class Grafo{
 		return vertice;
 	}
 
-
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Busca o vértice a partir do objeto armazenado nele.
 	 * @param Object - Objeto do vértice procurado.
@@ -153,6 +174,7 @@ public class Grafo{
 		return null;
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Busca a aresta a partir dos vértices que determinam o inicio e fim da aresta.
 	 * @param Vertice - Vértice origem da aresta.
@@ -171,6 +193,7 @@ public class Grafo{
 		return null;
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Retorna uma lista de todas as aresta incidentes no vértice encontrado.
 	 * @param String - Nome do vértice.
@@ -193,6 +216,7 @@ public class Grafo{
 		return arestasIncidentes;
 	}
 
+	/*______________________________________________________________________________________________________________________________*/
 	/**
 	 * Retorna um operador Dijkstra do grafo recebido.
 	 * @return Dijkstra - Operador dijkstra do grafo.
@@ -200,4 +224,5 @@ public class Grafo{
 	public Dijkstra menorCaminho(){
 		return new Dijkstra(this);
 	}
+	/*______________________________________________________________________________________________________________________________*/
 }

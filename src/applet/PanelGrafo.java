@@ -16,7 +16,9 @@ import model.Linha;
 import model.Ponto;
 
 /**
- * @author Gustavo
+ * Classe que estende de JPanel e sobrescreve o método paintComponent.
+ * @author Gustavo Henrique.
+ * @author Leonardo Melo.
  *
  */
 public class PanelGrafo extends JPanel {
@@ -27,12 +29,23 @@ public class PanelGrafo extends JPanel {
 
 	private final int RAIO = 10;
 
+	/*_____________________________________________________________________________________________________________________________*/
+	/**
+	 * Construtor da classe, recebe os componentes que serão desenhados na tela.
+	 * @param pontos - Lista de pontos.
+	 * @param linhas - Lista de linhas.
+	 */
 	public PanelGrafo(List<Ponto> pontos, List<Linha> linhas) {
 		super();
 		this.pontos = pontos;
 		this.linhas = linhas;
 	}
 
+	/*_____________________________________________________________________________________________________________________________*/
+	/**
+	 * Sobrescreve o método do JPanel herdado.
+	 * Pinta na tela todas as linhas e pontos recebidos pelo construtor.
+	 */
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
@@ -40,7 +53,7 @@ public class PanelGrafo extends JPanel {
 		g.setColor(Color.black);
 		Graphics2D grap2D = (Graphics2D) g;
 		grap2D.setStroke(new BasicStroke(2));
-		
+
 		if(pontos == null || linhas == null){
 			return;
 		}
@@ -63,4 +76,5 @@ public class PanelGrafo extends JPanel {
 			grap2D.drawLine(linha.getPonto1().getX(), linha.getPonto1().getY(), linha.getPonto2().getX(), linha.getPonto2().getY());
 		}
 	}
+	/*_____________________________________________________________________________________________________________________________*/
 }
