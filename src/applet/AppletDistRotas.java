@@ -51,10 +51,10 @@ public class AppletDistRotas extends JApplet {
 	private static List<Linha> listaDeLinhas;
 
 	private List<Linha> linhasCaminhos;
-	private List<Ponto> pontosCaminhos;
 
 	private JTextField textFieldNome = null;
 
+	/*____________________________________________________________________________________________________________________*/
 	/**
 	 * Construtor da classe, é instanciado os atributos da classe.
 	 */
@@ -63,11 +63,11 @@ public class AppletDistRotas extends JApplet {
 		listaDePontos = new ArrayList<Ponto>();
 		listaDeLinhas = new ArrayList<Linha>();
 		linhasCaminhos = new ArrayList<Linha>();
-		pontosCaminhos = new ArrayList<Ponto>();
 		this.controller = Controller.getInstance();
 		montarTela();
 	}
 
+	/*____________________________________________________________________________________________________________________*/
 	/**
 	 * Método que define o tamanho do applet.
 	 */
@@ -75,6 +75,7 @@ public class AppletDistRotas extends JApplet {
 		this.setSize(600, 540);
 	}
 
+	/*____________________________________________________________________________________________________________________*/
 	/**
 	 * Monta a tela da aplicação, preparando os panel's da classe.
 	 */
@@ -83,6 +84,7 @@ public class AppletDistRotas extends JApplet {
 		prepararPanelArea();
 	}
 
+	/*____________________________________________________________________________________________________________________*/
 	/**
 	 * Instância o JPanel e define o layout.
 	 */
@@ -113,6 +115,7 @@ public class AppletDistRotas extends JApplet {
 		prepararBotaoMostrarGrafo();
 	}
 
+	/*____________________________________________________________________________________________________________________*/
 	/**
 	 * Prepara o JPanel e define o layout.
 	 */
@@ -133,6 +136,7 @@ public class AppletDistRotas extends JApplet {
 		panelArea.setLayout(null);
 	}
 
+	/*____________________________________________________________________________________________________________________*/
 	/**
 	 * Prepara o botão cadastrar ponto.
 	 */
@@ -151,6 +155,7 @@ public class AppletDistRotas extends JApplet {
 		panelControle.add(botaoCadastrarPonto);
 	}
 
+	/*____________________________________________________________________________________________________________________*/
 	/**
 	 * Prepara o botão cadastrar aresta.
 	 */
@@ -320,12 +325,21 @@ public class AppletDistRotas extends JApplet {
 		panelArea.add(textFieldNome);
 	}
 
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Desenha o ponto recebido no panel area.
+	 * @param ponto - Ponto a ser desenhado na tela.
+	 */
 	private void desenharPonto(Ponto ponto){
 		Graphics grap = panelArea.getGraphics();
 		grap.drawOval(ponto.getX() - RAIO, ponto.getY() - RAIO, RAIO * 2, RAIO * 2);
 		grap.drawString(ponto.getNome(), ponto.getX() - RAIO - 5, ponto.getY() - RAIO - 5);
 	}
 
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o panel de cadastro de aresta.
+	 */
 	private void prepararPanelAreaCadastrarAresta(){
 
 		prepararPanelArea();
@@ -443,7 +457,11 @@ public class AppletDistRotas extends JApplet {
 		panelArea.add(botaoCriarAresta);
 		panelArea.add(comboFim);
 	}
-
+	
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o panel de remoção do ponto.
+	 */
 	private void prepararPanelAreaRemoverPonto(){
 		prepararPanelArea();
 
@@ -486,6 +504,10 @@ public class AppletDistRotas extends JApplet {
 		panelArea.add(botaoRemover);
 	}
 
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o panel de remoção da aresta.
+	 */
 	private void prepararPanelAreaRemoverAresta(){
 		prepararPanelArea();
 
@@ -522,6 +544,10 @@ public class AppletDistRotas extends JApplet {
 		panelArea.add(botaoRemover);
 	}
 
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o panel para a escolha da rota.
+	 */
 	private void prepararPanelAreaEscolherRota(){
 		prepararPanelArea();
 
@@ -594,9 +620,7 @@ public class AppletDistRotas extends JApplet {
 				}
 
 				try {
-					linhasCaminhos = new ArrayList<Linha>();
-					desenharGrafo(pontoGaragem.getNome(), pontoColeta.getNome());
-					desenharGrafo(pontoColeta.getNome(), pontoBanco.getNome());
+					desenharGrafo(pontoGaragem.getNome(), pontoColeta.getNome(), pontoBanco.getNome());
 				} catch (CaminhoInexistenteException e1) {
 					JOptionPane.showMessageDialog(null, "Não exite o caminho entre os pontos!");
 				}
@@ -605,14 +629,30 @@ public class AppletDistRotas extends JApplet {
 		panelArea.add(botaoGerarRota);
 	}
 
-	private void desenharGrafo(String nome1, String nome2) throws CaminhoInexistenteException{
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Desenha o grafo criado com os pontos de rota escolhido.
+	 * @param nome1 - Ponto da garagem.
+	 * @param nome2 - Ponto de coleta.
+	 * @param nome3 - Ponto do banco.
+	 * @throws CaminhoInexistenteException - Caso não exista caminho entre algum dos pontos escolhidos.
+	 */
+	private void desenharGrafo(String nome1, String nome2, String nome3) throws CaminhoInexistenteException{
 		List<List<Vertice>> caminhos = controller.menorCaminho(nome1, nome2);
+		linhasCaminhos = new ArrayList<Linha>();// Reinicializa a lista, para poder criar novos caminhos.
 		criarLinhas(caminhos);
-
+		caminhos = controller.menorCaminho(nome2, nome3);
+		criarLinhas(caminhos);
 		prepararPanelMostrarMenorCaminho(linhasCaminhos);
 		panelArea.repaint();
 	}
 
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Busca o ponto a partir do nome.
+	 * @param nome - Nome do ponto a ser buscado.
+	 * @return ponto - Ponto encontrado || null -  Caso o ponto não exista.
+	 */
 	private Ponto buscarPonto(String nome){
 		Ponto ponto = null;
 		Iterator<Ponto> it = listaDePontos.iterator();
@@ -624,6 +664,13 @@ public class AppletDistRotas extends JApplet {
 		return null;
 	}
 
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Busca a linha a partir dos pontos composto por elas.
+	 * @param ponto1 - Ponto da linha.
+	 * @param ponto2 - Ponto da linha.
+	 * @return linha - Linha encontrada || null - Caso a linha não exista.
+	 */
 	private Linha buscarLinha(Ponto ponto1, Ponto ponto2){
 		Iterator<Linha> it = listaDeLinhas.iterator();
 		Linha linha = null;
@@ -639,6 +686,12 @@ public class AppletDistRotas extends JApplet {
 		return null;
 	}
 
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o panel para exibição do grafo formado pelos pontos e linhas recebidos.
+	 * @param pontos - Lista de pontos.
+	 * @param linhas - Lista de linhas.
+	 */
 	private void prepararPanelAreaMostrarGrafo(List<Ponto> pontos, List<Linha> linhas){
 		this.remove(panelArea);
 		panelArea = new PanelGrafo(pontos, linhas);
@@ -647,6 +700,11 @@ public class AppletDistRotas extends JApplet {
 		this.add(panelArea);
 	}
 
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o panel para exibir o menor caminho formado pelas linhas recebidas.
+	 * @param linhas - Lista de linhas.
+	 */
 	private void prepararPanelMostrarMenorCaminho(List<Linha> linhas){
 		this.remove(panelArea);
 		panelArea = new PanelMenorCaminho(linhas);
@@ -655,13 +713,16 @@ public class AppletDistRotas extends JApplet {
 		this.add(panelArea);
 	}
 
-	private List<Linha> criarLinhas(List<List<Vertice>> caminhos){
+	/*____________________________________________________________________________________________________________________*/
+	/**
+	 * Cria a lista de linhas para os caminhos existentes na lista de caminhos possíveis.
+	 * @param caminhos - Lista de caminhos.
+	 */
+	private void criarLinhas(List<List<Vertice>> caminhos){
 
 		Ponto ponto = null;
 		Ponto ponto2 = null;
 		Linha linha = null;
-
-		List<Linha> linhas = new ArrayList<Linha>();
 
 		Iterator<Vertice> itV = null;
 
@@ -669,7 +730,6 @@ public class AppletDistRotas extends JApplet {
 			itV = caminho.iterator();
 			while(itV.hasNext()){
 				ponto = buscarPonto(itV.next().getObjeto().toString());
-				pontosCaminhos.add(ponto);
 				if(ponto2 == null){
 					ponto2 = ponto;
 				} else{
@@ -681,6 +741,5 @@ public class AppletDistRotas extends JApplet {
 			ponto2 = null;
 		}
 
-		return linhas;
 	}
 }
