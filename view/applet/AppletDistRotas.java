@@ -34,6 +34,13 @@ import model.Linha;
 import model.Ponto;
 import util.Vertice;
 
+
+/**
+ * Classe applet, responsável pela execução no browser.
+ * @author Gustavo Henrique.
+ * @author Leonardo Melo.
+ *
+ */
 public class AppletDistRotas extends JApplet {
 
 	private static final long serialVersionUID = 1L;
@@ -45,28 +52,42 @@ public class AppletDistRotas extends JApplet {
 	private static List<Ponto> listaDePontos;
 	private static List<Linha> listaDeLinhas;
 
+	private List<Linha> linhasCaminhos;
+	private List<Ponto> pontosCaminhos;
+
 	private JTextField textFieldNome = null;
 
 	/**
-	 * Create the applet.
+	 * Construtor da classe, é instanciado os atributos da classe.
 	 */
 	public AppletDistRotas() {
 
 		listaDePontos = new ArrayList<Ponto>();
 		listaDeLinhas = new ArrayList<Linha>();
+		linhasCaminhos = new ArrayList<Linha>();
+		pontosCaminhos = new ArrayList<Ponto>();
 		this.controller = Controller.getInstance();
 		montarTela();
 	}
 
+	/**
+	 * Método que define o tamanho do applet.
+	 */
 	public void init(){
-		this.setSize(600, 450);
+		this.setSize(600, 540);
 	}
 
+	/**
+	 * Monta a tela da aplicação, preparando os panel's da classe.
+	 */
 	public void montarTela(){
 		prepararPanelControle();
 		prepararPanelArea();
 	}
 
+	/**
+	 * Instância o JPanel e define o layout.
+	 */
 	private void prepararPanelControle() {
 		getContentPane().setBackground(Color.GRAY);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -94,6 +115,9 @@ public class AppletDistRotas extends JApplet {
 		prepararBotaoMostrarGrafo();
 	}
 
+	/**
+	 * Prepara o JPanel e define o layout.
+	 */
 	private void prepararPanelArea(){
 
 		if(panelArea != null)
@@ -111,6 +135,9 @@ public class AppletDistRotas extends JApplet {
 		panelArea.setLayout(null);
 	}
 
+	/**
+	 * Prepara o botão cadastrar ponto.
+	 */
 	private void prepararBotaoCadastrarPonto(){
 		JButton botaoCadastrarPonto = new JButton("Cadastrar Ponto");
 		botaoCadastrarPonto.setBounds(35, 22, 140, 33);
@@ -126,6 +153,9 @@ public class AppletDistRotas extends JApplet {
 		panelControle.add(botaoCadastrarPonto);
 	}
 
+	/**
+	 * Prepara o botão cadastrar aresta.
+	 */
 	private void prepararBotaoCadastrarAresta(){
 		JButton botaoCadastrarAresta = new JButton("Cadastrar Aresta");
 		botaoCadastrarAresta.setBounds(35, 66, 140, 33);
@@ -141,6 +171,9 @@ public class AppletDistRotas extends JApplet {
 		panelControle.add(botaoCadastrarAresta);
 	}
 
+	/**
+	 * Prepara o botão remover ponto.
+	 */
 	private void prepararBotaoRemoverPonto(){
 		JButton botaoRemoverPonto = new JButton("Remover Ponto");
 		botaoRemoverPonto.setBounds(35, 110, 140, 33);
@@ -155,7 +188,10 @@ public class AppletDistRotas extends JApplet {
 
 		panelControle.add(botaoRemoverPonto);
 	}
-
+	/*___________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o botão remover aresta.
+	 */
 	private void prepararBotaoRemoverAresta(){
 		JButton botaoRemoverAresta = new JButton("Remover Aresta");
 		botaoRemoverAresta.setBounds(35, 154, 140, 33);
@@ -172,6 +208,10 @@ public class AppletDistRotas extends JApplet {
 		panelControle.add(botaoRemoverAresta);
 	}
 
+	/*___________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o botão escolher rota.
+	 */
 	private void prepararBotaoEscolherRota(){
 		JButton botaoEscolherRota = new JButton("Escolher Rota");
 		botaoEscolherRota.setBounds(35, 198, 140, 33);
@@ -187,6 +227,10 @@ public class AppletDistRotas extends JApplet {
 		panelControle.add(botaoEscolherRota);
 	}
 
+	/*___________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o botão mostrar grafo.
+	 */
 	private void prepararBotaoMostrarGrafo(){
 		JButton botaoMostrarGrafo = new JButton("Mostrar Grafo");
 		botaoMostrarGrafo.setBounds(35, 243, 140, 33);
@@ -195,9 +239,10 @@ public class AppletDistRotas extends JApplet {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				t();
-				desenharLinhas();
-				desenharPontos(listaDePontos);
+				prepararPanelAreaMostrarGrafo(listaDePontos, listaDeLinhas);
+				panelArea.repaint();
+				/*desenharLinhas();
+				desenharPontos();*/
 				// TODO
 			}
 		});
@@ -205,6 +250,10 @@ public class AppletDistRotas extends JApplet {
 		panelControle.add(botaoMostrarGrafo);
 	}
 
+	/*___________________________________________________________________________________________________________________*/
+	/**
+	 * Prepara o panel area para cadastrar o ponto.
+	 */
 	private void prepararPanelAreaCadastrarPonto(){
 		prepararPanelArea();
 		Ponto ponto = new Ponto();
@@ -550,23 +599,20 @@ public class AppletDistRotas extends JApplet {
 				}
 
 				try {
-				
+					linhasCaminhos = new ArrayList<Linha>();
 					desenharGrafo(pontoGaragem.getNome(), pontoColeta.getNome());
 					desenharGrafo(pontoColeta.getNome(), pontoBanco.getNome());
 				} catch (CaminhoInexistenteException e1) {
 					JOptionPane.showMessageDialog(null, "Não exite o caminho entre os pontos!");
 				}
-				//TODO Verificar como ser escolhidos
-
 			}
 		});
-
 		panelArea.add(botaoGerarRota);
 	}
 
-	private void desenharPontos(List<Ponto> lista){
+	private void desenharPontos(){
 		Graphics gra = panelArea.getGraphics();
-		Iterator<Ponto> it = lista.iterator();
+		Iterator<Ponto> it = listaDePontos.iterator();
 		Ponto ponto = null;
 		while(it.hasNext()){
 			ponto = it.next();
@@ -577,12 +623,11 @@ public class AppletDistRotas extends JApplet {
 
 	private void desenharLinhas(){
 		Graphics gra = panelArea.getGraphics();
-		//gra.setStroke(new BasicStroke(2));
 		Iterator<Linha> it = listaDeLinhas.iterator();
 		Linha linha = null;
 		while(it.hasNext()){
 			linha = it.next();
-			gra.drawString(Integer.toString(linha.getCusto()), (linha.getPonto1().getX() + linha.getPonto2().getX())/2, ((linha.getPonto1().getY() + linha.getPonto2().getY())/2) + 10);
+			gra.drawString(Integer.toString(linha.getCusto()), (linha.getPonto1().getX() + linha.getPonto2().getX())/2, ((linha.getPonto1().getY() + linha.getPonto2().getY())/2));
 			gra.drawLine(linha.getPonto1().getX(), linha.getPonto1().getY(), linha.getPonto2().getX(), linha.getPonto2().getY());
 		}
 	}
@@ -597,30 +642,10 @@ public class AppletDistRotas extends JApplet {
 
 	private void desenharGrafo(String nome1, String nome2) throws CaminhoInexistenteException{
 		List<List<Vertice>> caminhos = controller.menorCaminho(nome1, nome2);
-		Iterator<Vertice> it = null;
-		Ponto ponto = null, ponto2 = null;
-		Linha linha = null;
+		criarLinhas(caminhos);
 
-		for(List<Vertice> caminho : caminhos){
-			if(caminho == null){
-				throw new CaminhoInexistenteException();
-			}
-			it = caminho.iterator();
-			while(it.hasNext()){
-				ponto = buscarPonto(it.next().getObjeto().toString());
-				System.out.println(ponto.getNome());
-				desenharPonto(ponto);
-				if(ponto2 == null){
-					ponto2 = ponto;
-				} else{
-					linha = buscarLinha(ponto, ponto2);
-					desenharLinha(linha);
-					ponto2 = ponto;
-				}
-			}
-			System.out.println("");
-			ponto2 = null;
-		}
+		prepararPanelMostrarMenorCaminho(linhasCaminhos);
+		panelArea.repaint();
 	}
 
 	private Ponto buscarPonto(String nome){
@@ -648,19 +673,49 @@ public class AppletDistRotas extends JApplet {
 		}
 		return null;
 	}
-	
-	private void t(){
-		//this.remove(panelArea);
-		/*panelArea = new JPanel();
-		GridBagConstraints layoutPanel = new GridBagConstraints();
-		layoutPanel.fill = GridBagConstraints.BOTH;
-		layoutPanel.gridx = 1;
-		layoutPanel.gridy = 0;
-		getContentPane().add(panelArea, layoutPanel);
-		GroupLayout layoutGroupPanel = new GroupLayout(panelArea);
-		layoutGroupPanel.setHorizontalGroup(layoutGroupPanel.createParallelGroup(Alignment.LEADING).addGap(0, 428, Short.MAX_VALUE));
-		layoutGroupPanel.setVerticalGroup(layoutGroupPanel.createParallelGroup(Alignment.LEADING).addGap(0, 450, Short.MAX_VALUE));
-		panelArea.setLayout(null);*/
-		
+
+	private void prepararPanelAreaMostrarGrafo(List<Ponto> pontos, List<Linha> linhas){
+		this.remove(panelArea);
+		panelArea = new PanelGrafo(pontos, linhas);
+		panelArea.setSize(386, 540);
+		panelArea.setLocation(214, 0);
+		this.add(panelArea);
+	}
+
+	private void prepararPanelMostrarMenorCaminho(List<Linha> linhas){
+		this.remove(panelArea);
+		panelArea = new PanelMenorCaminho(linhas);
+		panelArea.setSize(386, 540);
+		panelArea.setLocation(214, 0);
+		this.add(panelArea);
+	}
+
+	private List<Linha> criarLinhas(List<List<Vertice>> caminhos){
+
+		Ponto ponto = null;
+		Ponto ponto2 = null;
+		Linha linha = null;
+
+		List<Linha> linhas = new ArrayList<Linha>();
+
+		Iterator<Vertice> itV = null;
+
+		for(List<Vertice> caminho : caminhos){
+			itV = caminho.iterator();
+			while(itV.hasNext()){
+				ponto = buscarPonto(itV.next().getObjeto().toString());
+				pontosCaminhos.add(ponto);
+				if(ponto2 == null){
+					ponto2 = ponto;
+				} else{
+					linha = buscarLinha(ponto, ponto2);
+					linhasCaminhos.add(linha);
+					ponto2 = ponto;
+				}
+			}
+			ponto2 = null;
+		}
+
+		return linhas;
 	}
 }
