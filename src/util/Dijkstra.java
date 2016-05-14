@@ -21,7 +21,11 @@ public class Dijkstra {
 	public Dijkstra(Grafo grafo) {
 		this.arestas = new ArrayList<Aresta>(grafo.getArestas());
 	}
-
+	
+	/**
+	 * Gera as menores distâncias da raiz para cada outro vértice conexo do grafo 
+	 * @param Vertice - Vértice de origem
+	 */
 	public void executar(Vertice raiz) {
 		listaResultados = new ArrayList<List<Vertice>>();
 		nosVisitados = new HashSet<Vertice>();
@@ -38,6 +42,10 @@ public class Dijkstra {
 		}
 	}
 
+	/**
+	 * Acha a distância mínima até o nó
+	 * @param Vertice - Vertice
+	 */
 	private void acharDistanciaMinima(Vertice no) {
 		List<Vertice> nosAdjacentes = getVizinhos(no);
 		ArrayList<Vertice> listaAuxiliar;
@@ -55,16 +63,27 @@ public class Dijkstra {
 
 	}
 
-	private int getDistancia(Vertice no, Vertice target) {
+	/**
+	 * Método para retorno do peso da aresta entre nós adjacentes
+	 * @param Vertice - Nó do grafo
+	 * @param Vertice - Nó do grafo
+	 * @return int - Peso da aresta.
+	 */
+	private int getDistancia(Vertice no, Vertice no2) {
 		for (Aresta aresta : arestas) {
 			if (aresta.getVertice1().equals(no)
-					&& aresta.getVertice2().equals(target)) {
+					&& aresta.getVertice2().equals(no2)) {
 				return aresta.getPeso();
 			}
 		}
 		throw new RuntimeException("Should not happen");
 	}
 
+	/**
+	 * Método que descobre todos os vértices adjacentes a certo vértice
+	 * @param Vertice - Vértice do grafo
+	 * @return List<Vertice> - Lista de vértices
+	 */
 	private List<Vertice> getVizinhos(Vertice no) {
 		List<Vertice> adjacentes = new ArrayList<Vertice>();
 		for (Aresta aresta : arestas) {
@@ -76,26 +95,40 @@ public class Dijkstra {
 		return adjacentes;
 	}
 
+	/**
+	 * Método para cálculo do vértice com a menor distância
+	 * @param Set<Vertice> - Lista de Vértices
+	 * @return Vertice - Peso da aresta.
+	 */
 	private Vertice getVertMenorDistancia(Set<Vertice> vertices) {
-		Vertice minimum = null;
+		Vertice minimo = null;
 		for (Vertice vertice : vertices) {
-			if (minimum == null) {
-				minimum = vertice;
+			if (minimo == null) {
+				minimo = vertice;
 			} else {
-				if (getMenorDistancia(vertice) < getMenorDistancia(minimum)) {
-					minimum = vertice;
+				if (getMenorDistancia(vertice) < getMenorDistancia(minimo)) {
+					minimo = vertice;
 				}
 			}
 		}
-		return minimum;
+		return minimo;
 	}
-
+	
+	/**
+	 * Verifica se o nó já foi visitado
+	 * @return Boolean - Se já foi visitado
+	 */
 	private boolean isVisitado(Vertice vertice) {
 		return nosVisitados.contains(vertice);
 	}
 
-	private int getMenorDistancia(Vertice destination) {
-		Integer d = peso.get(destination);
+	/**
+	 * Retorna o valor da menor distância já calculada
+	 * @param Vertice - Vértice do grafo
+	 * @return int - Peso da aresta.
+	 */
+	private int getMenorDistancia(Vertice vertice) {
+		Integer d = peso.get(vertice);
 		if (d == null) {
 			return Integer.MAX_VALUE;
 		} else {
@@ -104,28 +137,34 @@ public class Dijkstra {
 	}
 
 
-	public List<List<Vertice>> getCaminho(ArrayList<Vertice> aux, Vertice target) {
+	/**
+	 * Método que retorna todos os caminhos mínimos 
+	 * @param Vertice - Vértice origem
+	 * @param ArrayList<Vertice> - Caminho mínimo até o vértice origem
+	 * @return List<List<Vertice>> - Lista de caminhos mínimos
+	 */
+	public List<List<Vertice>> getCaminho(ArrayList<Vertice> aux, Vertice vertice) {
 		if(aux == null){
 			aux = new ArrayList<Vertice>();
 		}
 		ArrayList<Vertice> caminho = new ArrayList<Vertice>(aux);
-		Vertice step = target;
-		ArrayList<Vertice> stepList;
+		Vertice vertAux = vertice;
+		ArrayList<Vertice> vertAuxList;
 
-		if (antecessores.get(step) == null) {
+		if (antecessores.get(vertAux) == null) {
 			return null;
 		}
-		caminho.add(step);
-		while (antecessores.get(step) != null) {
-			stepList = antecessores.get(step);
-			if(stepList.size() > 1){
-				for(int i = 1; i < stepList.size(); i++){
-					step = stepList.get(i);
-					getCaminho(caminho, step);
+		caminho.add(vertAux);
+		while (antecessores.get(vertAux) != null) {
+			vertAuxList = antecessores.get(vertAux);
+			if(vertAuxList.size() > 1){
+				for(int i = 1; i < vertAuxList.size(); i++){
+					vertAux = vertAuxList.get(i);
+					getCaminho(caminho, vertAux);
 				}
 			}
-			step = stepList.get(0);
-			caminho.add(step);
+			vertAux = vertAuxList.get(0);
+			caminho.add(vertAux);
 		}
 
 		Collections.reverse(caminho);

@@ -11,7 +11,7 @@ public class Ponto {
 
 	/**
 	 * Retorna o nome do ponto.
-	 * @return nome - Nome do ponto.
+	 * @return String - Nome do ponto.
 	 */
 	public String getNome() {
 		return nome;
@@ -19,7 +19,7 @@ public class Ponto {
 
 	/**
 	 * Altera o nome do ponto.
-	 * @param nome - Novo nome do ponto.
+	 * @param String - Novo nome do ponto.
 	 */
 	public void setNome(String nome) {
 		this.nome = nome;
@@ -27,7 +27,7 @@ public class Ponto {
 
 	/**
 	 * Retorna o valor de x.
-	 * @return x - Valor do x.
+	 * @return int - Valor do x.
 	 */
 	public int getX() {
 		return x;
@@ -35,7 +35,7 @@ public class Ponto {
 
 	/**
 	 * Altera o valor de x.
-	 * @param x - Novo valor de x.
+	 * @param int - Novo valor de x.
 	 */
 	public void setX(int x) {
 		this.x = x;
@@ -43,7 +43,7 @@ public class Ponto {
 
 	/**
 	 * Retorna o valor de y.
-	 * @return y - Valor de y.
+	 * @return int - Valor de y.
 	 */
 	public int getY() {
 		return y;
@@ -51,7 +51,7 @@ public class Ponto {
 
 	/**
 	 * Altera o valor de y.
-	 * @param y - Novo valor de y.
+	 * @param int - Novo valor de y.
 	 */
 	public void setY(int y) {
 		this.y = y;

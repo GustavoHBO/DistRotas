@@ -10,48 +10,48 @@ public class Linha {
 	}
 
 	/**
-	 * Retorna o conteúdo de ponto1.
-	 * @return ponto1 - Conteúdo de ponto1.
+	 * Retorna o conteúdo do ponto 1.
+	 * @return Ponto - Conteúdo do ponto 1.
 	 */
 	public Ponto getPonto1() {
 		return ponto1;
 	}
 
 	/**
-	 * Altera o conteúdo de ponto1.
-	 * @param ponto1 - Novo conteúdo de ponto1.
+	 * Altera o conteúdo do ponto1.
+	 * @param Ponto - Novo conteúdo do ponto 1.
 	 */
 	public void setPonto1(Ponto ponto1) {
 		this.ponto1 = ponto1;
 	}
 
 	/**
-	 * Retorna o conteúdo de ponto2.
-	 * @return ponto2 - Conteúdo de ponto2.
+	 * Retorna o conteúdo do ponto 2.
+	 * @return Ponto - Conteúdo do ponto 2.
 	 */
 	public Ponto getPonto2() {
 		return ponto2;
 	}
 
 	/**
-	 * Altera o conteúdo de ponto2.
-	 * @param ponto2 - Novo conteúdo de ponto2.
+	 * Altera o conteúdo do ponto 2.
+	 * @param Ponto - Novo conteúdo do ponto 2.
 	 */
 	public void setPonto2(Ponto ponto2) {
 		this.ponto2 = ponto2;
 	}
 
 	/**
-	 * Retorna o conteúdo de custo.
-	 * @return custo - Conteúdo de custo.
+	 * Retorna o Peso da linha
+	 * @return int - Peso da linha
 	 */
 	public int getCusto() {
 		return custo;
 	}
 
 	/**
-	 * Altera o conteúdo de custo.
-	 * @param custo - Novo conteúdo de custo.
+	 * Altera o peso da linha
+	 * @param int - Novo peso.
 	 */
 	public void setCusto(int custo) {
 		this.custo = custo;

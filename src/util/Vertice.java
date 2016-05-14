@@ -26,7 +26,7 @@ public class Vertice {
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Construtor da classe.	
-	 * @param objeto - Objeto do vértice.
+	 * @param Object - Objeto do vértice.
 	 */
 	public Vertice(Object objeto){
 		this.setObjeto(objeto);
@@ -37,7 +37,7 @@ public class Vertice {
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Retorna o grau do vértice.
-	 * @return grau - Grau do vértice.
+	 * @return int - Grau do vértice.
 	 */
 	public int getGrau() {
 		return grau;
@@ -45,32 +45,17 @@ public class Vertice {
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Altera o grau do vértice.
-	 * @param grau - Novo grau do vértice.
+	 * @param int - Novo grau do vértice.
 	 */
 	public void setGrau(int grau) {
 		this.grau = grau;
 	}
-	/*___________________________________________________________________________________________*/
-	/**
-	 * Retorna a lista de arestas do vértice.
-	 * @return listaArestas - Lista de arestas do vértice.
-	 */
-	/*public ArrayList<Aresta> getListaArestas() {
-		return listaArestas;
-	}*/
-	/*___________________________________________________________________________________________*/
-	/**
-	 * Altera a lista de arestas do vértice.
-	 * @param listaArestas - Nova lista de arestas do vértice.
-	 */
-	/*public void setListaArestas(ArrayList<Aresta> listaArestas) {
-		this.listaArestas = listaArestas;
-	}*/
+	
 	/*___________________________________________________________________________________________*/
 
 	/**
 	 * Retorna o objeto do vértice.
-	 * @return objeto - Objeto do vértice.
+	 * @return Object - Objeto do vértice.
 	 */
 	public Object getObjeto() {
 		return objeto;
@@ -78,7 +63,7 @@ public class Vertice {
 	/*___________________________________________________________________________________________*/
 	/**
 	 * Altera o objeto do vértice.
-	 * @param objeto - Novo objeto do vértice.
+	 * @param Object - Novo objeto do vértice.
 	 */
 	public void setObjeto(Object objeto) {
 		this.objeto = objeto;

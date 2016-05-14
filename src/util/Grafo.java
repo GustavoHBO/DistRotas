@@ -20,25 +20,44 @@ public class Grafo{
 		listaVertices = new ArrayList<Vertice>();
 		listaArestas = new ArrayList<Aresta>();
 	}
+	
+	/**
+	 * Método para retorno da quantidade de vértices do grafo
+	 * @return int - Número de vértices do grafo
+	 */
 	public int numVertices() {
 		return numVertices;
 	}
 
+	/**
+	 * Método para retorno da quantidade de arestas do grafo
+	 * @return int - Número de arestas do grafo
+	 */
 	public int numArestas() {
 		return numArestas;
 	}
-
+	
+	/**
+	 * Método para retorno dos vértices do grafo
+	 * @return List<Vertice> - Lista de todos os vértices do grafo
+	 */
 	public List<Vertice> getVertices(){
 		return listaVertices;
 	}
+	
+	/**
+	 * Método para retorno das arestas do grafo
+	 * @return List<Aresta> - Lista de todas as arestas do grafo
+	 */
 	public List<Aresta> getArestas(){
 		return listaArestas;
 	}
 
-	public int grauVertice(Vertice vet) {
-		return vet.getGrau();
-	}
-
+	/**
+	 * Remove o vértice a partir do objeto do vértice.
+	 * @param Object - Objeto inserido
+	 * @return Vertice - O vértice com o objeto inserido
+	 */
 	public Vertice inserir(Object o) {
 		if(o == null){// Caso o objeto recebido seja nulo.
 			return null;
@@ -50,6 +69,12 @@ public class Grafo{
 		return vertice;
 	}
 
+	/**
+	 * Método para inserir uma aresta orientada
+	 * @param Vertice - Vértice de origem
+	 * @param Vertice - Vértice de destino
+	 * @param int - Peso da aresta
+	 */
 	public void inserirAresta(Vertice v, Vertice w, int peso) {
 		if(v == null || w == null){
 			return;
@@ -62,12 +87,22 @@ public class Grafo{
 		listaArestas.add(aresta);
 
 	}
+	
+	/**
+	 * Inserir no grafouma aresta não orientada
+	 * @param Vertice - Vértice
+	 * @param Vertice - Vértice
+	 * @param int - Peso da aresta
+	 */
 	public void inserirArestaNaoOrientada(Vertice v, Vertice w, int peso) {
 		inserirAresta(v , w , peso);
 		inserirAresta(w , v , peso);
 
 	}
-
+	/**
+	 * Remove a aresta
+	 * @param Aresta - Aresta do grafo
+	 */
 	public void removerAresta(Aresta a) {
 		Aresta aresta = buscarAresta(a.getVertice1(), a.getVertice2());
 		if(aresta != null){
@@ -78,8 +113,8 @@ public class Grafo{
 
 	/**
 	 * Remove o vértice a partir do objeto do vértice.
-	 * @param o - Objeto do vértice a ser removido.
-	 * @return vertice - Vértice removido || null - Caso o vértice não seja encontrado.
+	 * @param Object - Objeto do vértice a ser removido.
+	 * @return Vertice - Vértice removido || null - Caso o vértice não seja encontrado.
 	 */
 	public Vertice removerVertice(Object o){
 		Iterator<Aresta> it = listaArestas.iterator();
@@ -103,8 +138,8 @@ public class Grafo{
 
 	/**
 	 * Busca o vértice a partir do objeto armazenado nele.
-	 * @param objeto - Objeto do vértice procurado.
-	 * @return vertice - Vértice procurado | null - Caso o vértice não seja encontrado.
+	 * @param Object - Objeto do vértice procurado.
+	 * @return Vertice - Vértice procurado | null - Caso o vértice não seja encontrado.
 	 */
 	public Vertice buscarVertice(Object objeto){
 		Iterator<Vertice> it = listaVertices.iterator();
@@ -120,9 +155,9 @@ public class Grafo{
 
 	/**
 	 * Busca a aresta a partir dos vértices que determinam o inicio e fim da aresta.
-	 * @param vertice1 - Vértice ponto da aresta.
-	 * @param vertice2 - Vértice ponto da aresta.
-	 * @return aresta - Aresta procurada || null - Caso a aresta não seja encontrada.
+	 * @param Vertice - Vértice origem da aresta.
+	 * @param Vertice - Vértice destino da aresta.
+	 * @return Aresta - Aresta procurada || null - Caso a aresta não seja encontrada.
 	 */
 	public Aresta buscarAresta(Vertice vertice1, Vertice vertice2){
 		Iterator<Aresta> it = listaArestas.iterator();
@@ -138,8 +173,8 @@ public class Grafo{
 
 	/**
 	 * Retorna uma lista de todas as aresta incidentes no vértice encontrado.
-	 * @param nome - Nome do vértice.
-	 * @return arestasIncidentes - Todas as arestas incidentes no vértice encontrado.
+	 * @param String - Nome do vértice.
+	 * @return List<Aresta> - Todas as arestas incidentes no vértice encontrado.
 	 */
 	public List<Aresta> arestasIncidentes(String nome){
 		List<Aresta> arestasIncidentes = new ArrayList<Aresta>();
@@ -160,7 +195,7 @@ public class Grafo{
 
 	/**
 	 * Retorna um operador Dijkstra do grafo recebido.
-	 * @return dijkstra - Operado dijkstra do grafo.
+	 * @return Dijkstra - Operador dijkstra do grafo.
 	 */
 	public Dijkstra menorCaminho(){
 		return new Dijkstra(this);
