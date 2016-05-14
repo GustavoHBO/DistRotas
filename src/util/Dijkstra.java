@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+/* Todo o código está muito bem entendível e não necessita de grandes comentários,
+ * mas por ser o algoritmo de resolução do problema, este necessita de alguns comentários
+ * */
 public class Dijkstra {
 
 	private final List<Aresta> arestas;
@@ -27,12 +29,15 @@ public class Dijkstra {
 	 * @param Vertice - Vértice de origem
 	 */
 	public void executar(Vertice raiz) {
-		listaResultados = new ArrayList<List<Vertice>>();
-		nosVisitados = new HashSet<Vertice>();
-		nosNaoVisitados = new HashSet<Vertice>();
-		peso = new HashMap<Vertice, Integer>();
-		antecessores = new HashMap<Vertice, ArrayList<Vertice>>();
-		peso.put(raiz, 0);
+		/* Este método chama o cálculo do algoritmo a partir do nó "raiz"
+		 * */
+		listaResultados = new ArrayList<List<Vertice>>(); // armazena todos os caminhos mínimos
+		nosVisitados = new HashSet<Vertice>(); // lista todos os nós visitados
+		nosNaoVisitados = new HashSet<Vertice>();  // lista todos os nós não visitados
+		peso = new HashMap<Vertice, Integer>(); //hashmap que relaciona os vértices com o peso do caminho até chegar nele
+		antecessores = new HashMap<Vertice, ArrayList<Vertice>>(); // armazena os antecessores dos vértices no caminho mais curto
+		
+		peso.put(raiz, 0); //o peso da raiz para a raiz sempre é 0
 		nosNaoVisitados.add(raiz);
 		while (nosNaoVisitados.size() > 0) {
 			Vertice no = getVertMenorDistancia(nosNaoVisitados);
@@ -47,16 +52,16 @@ public class Dijkstra {
 	 * @param Vertice - Vertice
 	 */
 	private void acharDistanciaMinima(Vertice no) {
-		List<Vertice> nosAdjacentes = getVizinhos(no);
+		List<Vertice> nosAdjacentes = getVizinhos(no);//pega todos os vizinhos de no
 		ArrayList<Vertice> listaAuxiliar;
 		for (Vertice target : nosAdjacentes) {
-			if (getMenorDistancia(target) > getMenorDistancia(no) + getDistancia(no, target)) {
+			if (getMenorDistancia(target) > getMenorDistancia(no) + getDistancia(no, target)) {//condição para substituir o peso atual do caminho para um menor peso
 				peso.put(target, getMenorDistancia(no) + getDistancia(no, target));
 				listaAuxiliar = new ArrayList<Vertice>();
 				listaAuxiliar.add(no);
 				antecessores.put(target, listaAuxiliar);
 				nosNaoVisitados.add(target);
-			}else if(getMenorDistancia(target) == getMenorDistancia(no) + getDistancia(no, target)){
+			}else if(getMenorDistancia(target) == getMenorDistancia(no) + getDistancia(no, target)){// Aqui se encontra a comparação para caminhos mínimos múltiplos
 				antecessores.get(target).add(no);
 	      }
 		}
@@ -70,13 +75,14 @@ public class Dijkstra {
 	 * @return int - Peso da aresta.
 	 */
 	private int getDistancia(Vertice no, Vertice no2) {
+		//procura em todas as arestas, se existe uma aresta que liga os dois vértices
 		for (Aresta aresta : arestas) {
 			if (aresta.getVertice1().equals(no)
 					&& aresta.getVertice2().equals(no2)) {
 				return aresta.getPeso();
 			}
 		}
-		throw new RuntimeException("Should not happen");
+		throw new RuntimeException("Não deveria acontecer!");
 	}
 
 	/**
@@ -86,6 +92,7 @@ public class Dijkstra {
 	 */
 	private List<Vertice> getVizinhos(Vertice no) {
 		List<Vertice> adjacentes = new ArrayList<Vertice>();
+		//procura em todas as arestas, os vértices que tem adjacência com no
 		for (Aresta aresta : arestas) {
 			if (aresta.getVertice1().equals(no)
 					&& !isVisitado(aresta.getVertice2())) {
@@ -144,6 +151,7 @@ public class Dijkstra {
 	 * @return List<List<Vertice>> - Lista de caminhos mínimos
 	 */
 	public List<List<Vertice>> getCaminho(ArrayList<Vertice> aux, Vertice vertice) {
+		//aux serve para auxiliar com a recursão. Representa o caminho mínimo da raiz até o último vértice da lista
 		if(aux == null){
 			aux = new ArrayList<Vertice>();
 		}
@@ -157,7 +165,7 @@ public class Dijkstra {
 		caminho.add(vertAux);
 		while (antecessores.get(vertAux) != null) {
 			vertAuxList = antecessores.get(vertAux);
-			if(vertAuxList.size() > 1){
+			if(vertAuxList.size() > 1){//condição para a recursão. Se tiver mais de 1 antecessor, ele cria novo caminho e segue independentemente do outro
 				for(int i = 1; i < vertAuxList.size(); i++){
 					vertAux = vertAuxList.get(i);
 					getCaminho(caminho, vertAux);
@@ -167,7 +175,7 @@ public class Dijkstra {
 			caminho.add(vertAux);
 		}
 
-		Collections.reverse(caminho);
+		Collections.reverse(caminho);//os caminhos começam pelo fim, então é necessário reverter o caminho para estar na ordem certa
 		listaResultados.add(caminho);
 		return listaResultados;
 	}
