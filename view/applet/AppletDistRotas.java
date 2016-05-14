@@ -1,9 +1,7 @@
 package applet;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -241,9 +239,6 @@ public class AppletDistRotas extends JApplet {
 			public void actionPerformed(ActionEvent e) {
 				prepararPanelAreaMostrarGrafo(listaDePontos, listaDeLinhas);
 				panelArea.repaint();
-				/*desenharLinhas();
-				desenharPontos();*/
-				// TODO
 			}
 		});
 
@@ -608,36 +603,6 @@ public class AppletDistRotas extends JApplet {
 			}
 		});
 		panelArea.add(botaoGerarRota);
-	}
-
-	private void desenharPontos(){
-		Graphics gra = panelArea.getGraphics();
-		Iterator<Ponto> it = listaDePontos.iterator();
-		Ponto ponto = null;
-		while(it.hasNext()){
-			ponto = it.next();
-			gra.drawString(ponto.getNome(), ponto.getX() - RAIO - 5, ponto.getY() - RAIO - 5);
-			gra.drawOval(ponto.getX() - RAIO, ponto.getY() - RAIO, RAIO * 2, RAIO * 2);
-		}
-	}
-
-	private void desenharLinhas(){
-		Graphics gra = panelArea.getGraphics();
-		Iterator<Linha> it = listaDeLinhas.iterator();
-		Linha linha = null;
-		while(it.hasNext()){
-			linha = it.next();
-			gra.drawString(Integer.toString(linha.getCusto()), (linha.getPonto1().getX() + linha.getPonto2().getX())/2, ((linha.getPonto1().getY() + linha.getPonto2().getY())/2));
-			gra.drawLine(linha.getPonto1().getX(), linha.getPonto1().getY(), linha.getPonto2().getX(), linha.getPonto2().getY());
-		}
-	}
-
-	private void desenharLinha(Linha linha){
-		Graphics2D gra = (Graphics2D)panelArea.getGraphics();
-		gra.setStroke(new BasicStroke(2));
-
-		gra.drawString(Integer.toString(linha.getCusto()), (linha.getPonto1().getX() + linha.getPonto2().getX())/2, ((linha.getPonto1().getY() + linha.getPonto2().getY())/2));
-		gra.drawLine(linha.getPonto1().getX(), linha.getPonto1().getY(), linha.getPonto2().getX(), linha.getPonto2().getY());
 	}
 
 	private void desenharGrafo(String nome1, String nome2) throws CaminhoInexistenteException{

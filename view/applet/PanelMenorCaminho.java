@@ -21,7 +21,6 @@ public class PanelMenorCaminho extends JPanel {
 
 	public PanelMenorCaminho(List<Linha> linhas) {
 		super();
-		System.out.println("Cheguei!!");
 		this.linhas = linhas;
 	}
 
