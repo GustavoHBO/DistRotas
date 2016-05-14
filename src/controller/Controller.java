@@ -31,7 +31,7 @@ public class Controller {
 
 	/**
 	 * Cadastra os pontos no grafo.
-	 * @param nome - Nome do ponto cadastrado.
+	 * @param String - Nome do ponto cadastrado.
 	 * @throws NomeInvalidoException - Caso o nome seja invalido.
 	 */
 	public void cadastrarPonto(String nome) throws NomeInvalidoException{
@@ -50,9 +50,9 @@ public class Controller {
 
 	/**
 	 * Cadastra um caminho entre os pontos.
-	 * @param nome1 - Nome do ponto1.
-	 * @param nome2 - Nome do ponto2.
-	 * @param peso - Custo do caminho.
+	 * @param String - Nome do ponto 1.
+	 * @param String - Nome do ponto 2.
+	 * @param int - Custo do caminho.
 	 */
 	public void cadastrarCaminho(String nome1, String nome2, int peso){
 		
@@ -64,7 +64,7 @@ public class Controller {
 
 	/**
 	 * Remove o ponto e todas as arestas incidentes no ponto.
-	 * @param nome - Nome do ponto a ser removido.
+	 * @param String - Nome do ponto a ser removido.
 	 */
 	public void removerPonto(String nome){
 		grafo.removerVertice(nome);
@@ -72,8 +72,8 @@ public class Controller {
 
 	/**
 	 * Remove todos os caminhos entre os objetos com o nome recebido.
-	 * @param nome1 - Nome do vértice1.
-	 * @param nome2 - Nome do vértice2.
+	 * @param String - Nome do vértice 1.
+	 * @param String - Nome do vértice 2.
 	 */
 	public void removerCaminho(String nome1, String nome2){
 		Vertice vertice1 = grafo.buscarVertice(nome1);// Busca a aresta com nome1.
@@ -86,6 +86,12 @@ public class Controller {
 		grafo.removerAresta(aresta2);// Remove a segunda aresta.
 	}
 
+	/**
+	 * Método para cálculo dos caminhos mínimos entre dois vértices
+	 * @param String - Nome do vértice de origem.
+	 * @param String - Nome do vértice de destino.
+	 * @return List<List<Vertice>> - Lista de caminhos mínimos
+	 */
 	public List<List<Vertice>> menorCaminho(String nome1, String nome2){
 		
 		Dijkstra operador = grafo.menorCaminho();
